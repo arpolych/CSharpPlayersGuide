@@ -14,5 +14,5 @@ Console.WriteLine("The " + b + " " + a + " of " + c + " " + d + "!");
  * Answer to question:
  * 
  * I would put good variable names, instead of letters which don't indicate 
- * what the variable actually does during code review.
+ * what the variable actually does during my code review.
  */
