@@ -1,0 +1,1 @@
+I've created this repository with the goal of teaching myself how to use GitHub, while I'm trying to learn C# programming to an excellent level through the "C# Player's Guide 5th Edition" book by RB Whitaker.
