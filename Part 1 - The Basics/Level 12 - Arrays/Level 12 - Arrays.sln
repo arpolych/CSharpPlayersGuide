@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.37314.3 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheReplicatorOfD'To", "TheReplicatorOfD'To\TheReplicatorOfD'To.csproj", "{D3FC4F6F-B23D-4870-943F-DF31B916E353}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheLawsOfFreach", "TheLawsOfFreach\TheLawsOfFreach.csproj", "{899F1ECF-58F8-4678-8BF3-F6F9D35B3ED2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D3FC4F6F-B23D-4870-943F-DF31B916E353}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3FC4F6F-B23D-4870-943F-DF31B916E353}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3FC4F6F-B23D-4870-943F-DF31B916E353}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3FC4F6F-B23D-4870-943F-DF31B916E353}.Release|Any CPU.Build.0 = Release|Any CPU
+		{899F1ECF-58F8-4678-8BF3-F6F9D35B3ED2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{899F1ECF-58F8-4678-8BF3-F6F9D35B3ED2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{899F1ECF-58F8-4678-8BF3-F6F9D35B3ED2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{899F1ECF-58F8-4678-8BF3-F6F9D35B3ED2}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F7C86DE5-A1D2-4964-BC58-FA165EF664F4}
+	EndGlobalSection
+EndGlobal
