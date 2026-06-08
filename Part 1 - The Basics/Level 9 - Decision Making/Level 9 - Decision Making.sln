@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.37314.3 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RepairingTheClocktower", "RepairingTheClocktower\RepairingTheClocktower.csproj", "{C4F3EAF6-CAAC-4F42-8561-A13B52AFF3E9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Watchtower", "Watchtower\Watchtower.csproj", "{4D53C380-A560-4C31-A5A7-B1FFC88F58DF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C4F3EAF6-CAAC-4F42-8561-A13B52AFF3E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C4F3EAF6-CAAC-4F42-8561-A13B52AFF3E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C4F3EAF6-CAAC-4F42-8561-A13B52AFF3E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C4F3EAF6-CAAC-4F42-8561-A13B52AFF3E9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D53C380-A560-4C31-A5A7-B1FFC88F58DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D53C380-A560-4C31-A5A7-B1FFC88F58DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D53C380-A560-4C31-A5A7-B1FFC88F58DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D53C380-A560-4C31-A5A7-B1FFC88F58DF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0F45E1F1-7652-4724-A21B-33175BF48C74}
+	EndGlobalSection
+EndGlobal
