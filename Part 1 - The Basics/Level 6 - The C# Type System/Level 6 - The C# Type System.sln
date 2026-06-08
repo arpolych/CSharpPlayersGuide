@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.37314.3
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheVariableShop", "TheVariableShop\TheVariableShop.csproj", "{F154F31D-C2BC-4B1C-BD1B-AF16BE7ECF9D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheVariableShopReturns", "TheVariableShopReturns\TheVariableShopReturns.csproj", "{1962A9B1-A62A-47FE-91C5-99BC7AF06308}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F154F31D-C2BC-4B1C-BD1B-AF16BE7ECF9D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F154F31D-C2BC-4B1C-BD1B-AF16BE7ECF9D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F154F31D-C2BC-4B1C-BD1B-AF16BE7ECF9D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F154F31D-C2BC-4B1C-BD1B-AF16BE7ECF9D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1962A9B1-A62A-47FE-91C5-99BC7AF06308}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1962A9B1-A62A-47FE-91C5-99BC7AF06308}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1962A9B1-A62A-47FE-91C5-99BC7AF06308}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1962A9B1-A62A-47FE-91C5-99BC7AF06308}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0F44B546-970B-4DEF-ADA4-EA80053C5581}
+	EndGlobalSection
+EndGlobal
