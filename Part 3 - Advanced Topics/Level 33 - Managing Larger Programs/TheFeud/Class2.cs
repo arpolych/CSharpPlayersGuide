@@ -1,1 +1,1 @@
-﻿public class Class2 { }
+﻿public sealed class Class2 { }
