@@ -3,10 +3,10 @@
  * writes you must go with the option "Start Without 
  * Debugging (Ctrl + F5)" in Visual Studio.
  */
-SafeThreadExample();
-UnsafeThreadExample();
+RunSafeThreadExample();
+RunUnsafeThreadExample();
 
-static void UnsafeThreadExample()
+static void RunUnsafeThreadExample()
 {
     const int totalIterations = 1_000;
     int counterWas2 = 0;
@@ -28,7 +28,7 @@ static void UnsafeThreadExample()
     Console.WriteLine($"Unsafe way results: {counterWas2}/{totalIterations}");
 }
 
-static void SafeThreadExample()
+static void RunSafeThreadExample()
 {
     const int totalIterations = 1_000;
     int counterWas2 = 0;
