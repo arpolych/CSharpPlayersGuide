@@ -1,4 +1,9 @@
-﻿int was2 = 0, iteration = 1_000, totalIterations = 0;
+﻿/*
+ * To observe the unexpected behavior with the reads and
+ * writes you must go with the option "Start Without 
+ * Debugging (Ctrl + F5)" in Visual Studio.
+ */
+int was2 = 0, iteration = 1_000, totalIterations = 0;
 for (int i = 0; i < iteration; i++)
 {
     totalIterations++;
