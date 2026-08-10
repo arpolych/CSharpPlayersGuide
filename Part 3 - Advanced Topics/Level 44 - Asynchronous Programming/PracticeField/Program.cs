@@ -1,12 +1,14 @@
-﻿AddOnEuropa(2, 3, result => { Console.WriteLine(result); });
+﻿Task<int> firstAdd = AddOnEuropa(2, 3);
+Task<int> secondAdd = AddOnEuropa(4, 5);
 
-void AddOnEuropa(int a, int b, Action<int> callback)
+int result = await AddOnEuropa(await firstAdd, await secondAdd);
+Console.WriteLine(result);
+
+Task<int> AddOnEuropa(int a, int b)
 {
-    Thread thread = new Thread(() =>
+    return Task.Run(() =>
     {
         Thread.Sleep(3_000);
-        int result = a + b;
-        callback(result);
+        return a + b;
     });
-    thread.Start();
 }
