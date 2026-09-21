@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AsynchronousRandomWords", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PracticeField", "PracticeField\PracticeField.csproj", "{A3CAC417-8FF0-4104-B032-D595D9773389}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ManyRandomWords", "ManyRandomWords\ManyRandomWords.csproj", "{E6D85B3C-4D00-48CC-9EED-A6503D0A7A30}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{A3CAC417-8FF0-4104-B032-D595D9773389}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A3CAC417-8FF0-4104-B032-D595D9773389}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A3CAC417-8FF0-4104-B032-D595D9773389}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E6D85B3C-4D00-48CC-9EED-A6503D0A7A30}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E6D85B3C-4D00-48CC-9EED-A6503D0A7A30}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E6D85B3C-4D00-48CC-9EED-A6503D0A7A30}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E6D85B3C-4D00-48CC-9EED-A6503D0A7A30}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
