@@ -1,4 +1,7 @@
-﻿RunChapterTopic("Iterators And The Yield", IteratorsAndTheYield);
+﻿using System.Threading.Tasks;
+
+RunChapterTopic("Iterators And The Yield", IteratorsAndTheYield);
+RunChapterTopic("Async Enumerables", AsyncEnumerables);
 
 static void RunChapterTopic(string topicName, Action topicFunc)
 {
@@ -15,14 +18,72 @@ static void RunChapterTopic(string topicName, Action topicFunc)
 
 static void IteratorsAndTheYield()
 {
-    foreach (int number in SingleDigits())
+    var myNums = SingleDigits();
+
+    foreach (int number in myNums)
     {
-        Console.WriteLine(number);
+        Console.WriteLine($"First loop: {number}");
+        if (number == 5) break;
     }
 
-    IEnumerable<int> SingleDigits()
+    foreach (int number in myNums)
     {
-        for (int number = 1; number <= 10; number++)
-            yield return number;
+        Console.WriteLine($"Second loop: {number}");
+        // Thread.Sleep(3_000);
+    }
+
+    /*
+     * var nums = AlternatingPattern().ToList();
+     * Console.WriteLine("Shall never get here!");
+     */
+
+    Console.WriteLine("Welcome to infinite loop!");
+    foreach (int n in AlternatingPattern())
+    {
+        Console.WriteLine($"Third loop: {n}");
+        Thread.Sleep(1_500);
+    }
+}
+
+static IEnumerable<int> SingleDigits()
+{
+    for (int number = 1; number <= 10; number++)
+        yield return number;
+    yield break;
+}
+
+static IEnumerable<int> AlternatingPattern()
+{
+    while (true)
+    {
+        yield return +1;
+        yield return -1;
+    }
+}
+
+static async void AsyncEnumerables()
+{
+    string[] urls = new string[] {
+        "http://google.com",
+        "http://amazon.com",
+        "http://microsoft.com"};
+
+    await foreach (string url in GetManySiteContents(urls))
+    {
+        Console.WriteLine(url);
+    }
+}
+
+static async Task<string> GetSiteContents(string url)
+{
+    await Task.Delay(3_000);
+    return "content ;)";
+}
+
+static async IAsyncEnumerable<string> GetManySiteContents(string[] manyUrls)
+{
+    foreach (string url in manyUrls)
+    {
+        yield return await GetSiteContents(url);
     }
 }
