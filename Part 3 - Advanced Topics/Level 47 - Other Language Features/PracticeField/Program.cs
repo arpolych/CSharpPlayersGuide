@@ -2,6 +2,7 @@
 
 RunChapterTopic("Iterators And The Yield", IteratorsAndTheYield);
 RunChapterTopic("Async Enumerables", AsyncEnumerables);
+RunChapterTopic("Constants", Constants);
 
 static void RunChapterTopic(string topicName, Action topicFunc)
 {
@@ -42,6 +43,7 @@ static void IteratorsAndTheYield()
     {
         Console.WriteLine($"Third loop: {n}");
         Thread.Sleep(1_500);
+        break;
     }
 }
 
@@ -86,4 +88,11 @@ static async IAsyncEnumerable<string> GetManySiteContents(string[] manyUrls)
     {
         yield return await GetSiteContents(url);
     }
+}
+
+static void Constants()
+{
+    const double TwoPi = 2 * Math.PI;
+
+    Console.WriteLine($"This is my 2-pies number: {TwoPi}");
 }
