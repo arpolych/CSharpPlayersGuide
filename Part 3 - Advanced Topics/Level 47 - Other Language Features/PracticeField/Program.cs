@@ -3,6 +3,7 @@
 RunChapterTopic("Iterators And The Yield", IteratorsAndTheYield);
 RunChapterTopic("Async Enumerables", AsyncEnumerables);
 RunChapterTopic("Constants", Constants);
+RunChapterTopic("Attributes", Attributes);
 
 static void RunChapterTopic(string topicName, Action topicFunc)
 {
@@ -95,4 +96,15 @@ static void Constants()
     const double TwoPi = 2 * Math.PI;
 
     Console.WriteLine($"This is my 2-pies number: {TwoPi}");
+}
+
+static void Attributes()
+{
+    OldDeadMethod();
+}
+
+[Obsolete("Use NewDeadMethod", false)]
+static void OldDeadMethod()
+{
+    Console.WriteLine("I'm too old to function...");
 }
