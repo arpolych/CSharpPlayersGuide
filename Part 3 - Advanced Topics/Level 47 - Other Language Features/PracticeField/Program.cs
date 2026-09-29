@@ -1,9 +1,11 @@
-﻿using System.Threading.Tasks;
+﻿using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 
 RunChapterTopic("Iterators And The Yield", IteratorsAndTheYield);
 RunChapterTopic("Async Enumerables", AsyncEnumerables);
 RunChapterTopic("Constants", Constants);
 RunChapterTopic("Attributes", Attributes);
+RunChapterTopic("Reflection", Reflection);
 
 static void RunChapterTopic(string topicName, Action topicFunc)
 {
@@ -108,3 +110,10 @@ static void OldDeadMethod()
 {
     Console.WriteLine("I'm too old to function...");
 }
+
+static void Reflection()
+{
+    Type type = typeof(int);
+    Type typeOfClass = typeof(MyClass);
+}
+class MyClass { }
