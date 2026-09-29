@@ -114,6 +114,7 @@ static void OldDeadMethod()
 static void Reflection()
 {
     Type type = typeof(int);
+    Type type = typeof(double);
     Type typeOfClass = typeof(MyClass);
 }
 class MyClass { }
