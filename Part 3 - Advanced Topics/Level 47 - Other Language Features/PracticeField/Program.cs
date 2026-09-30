@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 RunChapterTopic("Iterators And The Yield", IteratorsAndTheYield);
@@ -48,21 +49,21 @@ static void IteratorsAndTheYield()
         Thread.Sleep(1_500);
         break;
     }
-}
 
-static IEnumerable<int> SingleDigits()
-{
-    for (int number = 1; number <= 10; number++)
-        yield return number;
-    yield break;
-}
-
-static IEnumerable<int> AlternatingPattern()
-{
-    while (true)
+    static IEnumerable<int> SingleDigits()
     {
-        yield return +1;
-        yield return -1;
+        for (int number = 1; number <= 10; number++)
+            yield return number;
+        yield break;
+    }
+
+    static IEnumerable<int> AlternatingPattern()
+    {
+        while (true)
+        {
+            yield return +1;
+            yield return -1;
+        }
     }
 }
 
@@ -77,19 +78,19 @@ static async void AsyncEnumerables()
     {
         Console.WriteLine(url);
     }
-}
 
-static async Task<string> GetSiteContents(string url)
-{
-    await Task.Delay(3_000);
-    return "content ;)";
-}
-
-static async IAsyncEnumerable<string> GetManySiteContents(string[] manyUrls)
-{
-    foreach (string url in manyUrls)
+    static async Task<string> GetSiteContents(string url)
     {
-        yield return await GetSiteContents(url);
+        await Task.Delay(3_000);
+        return "content ;)";
+    }
+
+    static async IAsyncEnumerable<string> GetManySiteContents(string[] manyUrls)
+    {
+        foreach (string url in manyUrls)
+        {
+            yield return await GetSiteContents(url);
+        }
     }
 }
 
@@ -114,7 +115,15 @@ static void OldDeadMethod()
 static void Reflection()
 {
     Type type = typeof(int);
-    Type type = typeof(double);
     Type typeOfClass = typeof(MyClass);
+    var myObjClass = new MyClass();
+    var typeOfMyObj = myObjClass.GetType();
+    ConstructorInfo[] constructors = typeOfMyObj.GetConstructors();
+    MethodInfo[] methods = typeOfMyObj.GetMethods();
+    ConstructorInfo? specificConstructor = typeOfMyObj.GetConstructor(new Type[] { typeof(int), typeof(double) });
+    MethodInfo? specificMethod = typeOfMyObj.GetMethod("MethodName", new Type[] { typeof(int) });
+    object newObj = specificConstructor.Invoke(new object[] { 17 });
+    specificMethod.Invoke(newObj, new object[] { 4 });
 }
+
 class MyClass { }
