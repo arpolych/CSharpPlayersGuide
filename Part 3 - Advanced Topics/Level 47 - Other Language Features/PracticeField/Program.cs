@@ -7,6 +7,7 @@ RunChapterTopic("Async Enumerables", AsyncEnumerables);
 RunChapterTopic("Constants", Constants);
 RunChapterTopic("Attributes", Attributes);
 RunChapterTopic("Reflection", Reflection);
+RunChapterTopic("Name Of Operator", NameOfOperator);
 
 static void RunChapterTopic(string topicName, Action topicFunc)
 {
@@ -122,8 +123,29 @@ static void Reflection()
     MethodInfo[] methods = typeOfMyObj.GetMethods();
     ConstructorInfo? specificConstructor = typeOfMyObj.GetConstructor(new Type[] { typeof(int), typeof(double) });
     MethodInfo? specificMethod = typeOfMyObj.GetMethod("MethodName", new Type[] { typeof(int) });
-    object newObj = specificConstructor.Invoke(new object[] { 17 });
-    specificMethod.Invoke(newObj, new object[] { 4 });
+    object? newObj = specificConstructor?.Invoke(new object[] { 17 });
+    specificMethod?.Invoke(newObj, new object[] { 4 });
+}
+
+static void NameOfOperator()
+{
+    DisplayNumbersAB(4, 5);
+    DisplayNumbersFirstSecond(4, 5);
+    DisplayNumbersNameOf(4, 5);
+
+    void DisplayNumbersAB(int a, int b) => Console.WriteLine($"Display nums AB: a={a} and b={b}");
+    void DisplayNumbersFirstSecond(int first, int second) => Console.WriteLine($"Display first and second: a={first} and b={second}");
+    void DisplayNumbersNameOf(int nameOfFirst, int nameOfSecond) => Console.WriteLine($"Display nameof parameters: {nameof(nameOfFirst)}={nameOfFirst} and {nameof(nameOfSecond)}={nameOfSecond}");
 }
 
 class MyClass { }
+
+public class Door
+{
+    private enum DoorState { Open, Closed, Locked }
+
+    private DoorState _doorState = DoorState.Closed;
+
+    public bool IsOpen => _doorState == DoorState.Open;
+    public bool IsLocked => _doorState == DoorState.Locked;
+}
