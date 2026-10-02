@@ -8,6 +8,7 @@ RunChapterTopic("Constants", Constants);
 RunChapterTopic("Attributes", Attributes);
 RunChapterTopic("Reflection", Reflection);
 RunChapterTopic("Name Of Operator", NameOfOperator);
+RunChapterTopic("Bit Manipulations", BitManipulations);
 
 static void RunChapterTopic(string topicName, Action topicFunc)
 {
@@ -136,6 +137,37 @@ static void NameOfOperator()
     void DisplayNumbersAB(int a, int b) => Console.WriteLine($"Display nums AB: a={a} and b={b}");
     void DisplayNumbersFirstSecond(int first, int second) => Console.WriteLine($"Display first and second: a={first} and b={second}");
     void DisplayNumbersNameOf(int nameOfFirst, int nameOfSecond) => Console.WriteLine($"Display nameof parameters: {nameof(nameOfFirst)}={nameOfFirst} and {nameof(nameOfSecond)}={nameOfSecond}");
+}
+
+static void BitManipulations()
+{
+    int controllerState = 0b00010001;
+    int shiftedLeft = controllerState << 2;
+    int shiftedRight = controllerState >> 3;
+
+    Console.WriteLine($"Original bit state: {controllerState}");
+    Console.WriteLine($"Left shifted << 2: {shiftedLeft}");
+    Console.WriteLine($"Right shifted >> 3: {shiftedRight}");
+    Console.WriteLine($"bitwise-and: {shiftedLeft & shiftedRight}");
+    Console.WriteLine($"bitwise-or: {shiftedLeft | shiftedRight}");
+    Console.WriteLine($"exclusive-bitwise-or: {shiftedRight ^ shiftedRight}");
+    Console.WriteLine($"bitwise-complement: {~shiftedRight}");
+
+    Buttons state = Buttons.Start;
+    Console.WriteLine($"Custom enum : byte w/[Flags]: {state}");
+}
+
+[Flags]
+public enum Buttons : byte
+{
+    Up = 1 << 0,
+    Down = 1 << 1,
+    Left = 1 << 2,
+    Right = 1 << 3,
+    A = 1 << 4,
+    B = 1 << 5,
+    Start = 1 << 6,
+    Select = 1 << 7
 }
 
 class MyClass { }
