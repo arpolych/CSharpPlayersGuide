@@ -2,6 +2,7 @@
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
+//string s = args[0]; -- stays unused ;)
 RunChapterTopic("Iterators And The Yield", IteratorsAndTheYield);
 RunChapterTopic("Async Enumerables", AsyncEnumerables);
 RunChapterTopic("Constants", Constants);
@@ -9,7 +10,10 @@ RunChapterTopic("Attributes", Attributes);
 RunChapterTopic("Reflection", Reflection);
 RunChapterTopic("Name Of Operator", NameOfOperator);
 RunChapterTopic("Bit Manipulations", BitManipulations);
+RunChapterTopic("Using And IDisposable", UsingAndIDisposable);
+RunChapterTopic("GOTO Keyword", GOTOKeyword);
 
+#region The chapter topics
 static void RunChapterTopic(string topicName, Action topicFunc)
 {
     Console.ForegroundColor = ConsoleColor.Cyan;
@@ -157,6 +161,37 @@ static void BitManipulations()
     Console.WriteLine($"Custom enum : byte w/[Flags]: {state}");
 }
 
+static void UsingAndIDisposable()
+{
+    try
+    {
+        using FileStream fs = File.Open("Settings.txt", FileMode.Open);
+        // using MyClass s = new(); -- error, bc MyClass must implement IDisposable
+        while (fs.ReadByte() > 0)
+            Console.WriteLine("Read in a byte.");
+
+        fs.Close();
+        // fs.Dispose(); -- automatic w/using+IDisposable obj
+    }
+    catch
+    {
+        return;
+    }
+}
+
+static void GOTOKeyword()
+{
+    int number = 0;
+
+Top:
+    Console.WriteLine(number);
+    number++;
+    if (number < 10)
+        goto Top;
+}
+
+#endregion Chapter's topics
+
 [Flags]
 public enum Buttons : byte
 {
@@ -180,4 +215,17 @@ public class Door
 
     public bool IsOpen => _doorState == DoorState.Open;
     public bool IsLocked => _doorState == DoorState.Locked;
+}
+
+public partial class ClassA
+{
+    public partial void F();
+}
+
+public partial class ClassA
+{
+    public partial void F()
+    {
+        throw new NotImplementedException();
+    }
 }
