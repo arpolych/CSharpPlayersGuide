@@ -12,6 +12,8 @@ RunChapterTopic("Name Of Operator", NameOfOperator);
 RunChapterTopic("Bit Manipulations", BitManipulations);
 RunChapterTopic("Using And IDisposable", UsingAndIDisposable);
 RunChapterTopic("GOTO Keyword", GOTOKeyword);
+RunChapterTopic("Generic Covariance And Contra", GenericCovarianceAndContra);
+RunChapterTopic("Checked Unchcked", CheckedUnchcked);
 
 #region The chapter topics
 static void RunChapterTopic(string topicName, Action topicFunc)
@@ -190,6 +192,23 @@ Top:
         goto Top;
 }
 
+static void GenericCovarianceAndContra()
+{
+    GameObject obj_1 = new Ship();
+    // List<GameObject> objects = new List<Ship>();
+    // objects.Add(new Asteroid());
+    IEnumerable<Ship> ships = new List<Ship>();
+    IEnumerable<GameObject> objects = ships;
+    
+}
+
+static void CheckedUnchcked()
+{
+    int x = int.MaxValue;
+
+    Console.WriteLine(checked(unchecked(x + 1))); // -- just a funny situation ;)
+}
+
 #endregion Chapter's topics
 
 [Flags]
@@ -228,4 +247,19 @@ public partial class ClassA
     {
         throw new NotImplementedException();
     }
+}
+
+public class GameObject
+{
+    public int X { get; set; }
+    public int Y { get; set; }
+}
+
+public class Ship : GameObject { }
+
+public class Asteroid : GameObject { }
+
+public interface IStringMaker<in T>
+{
+    string MakeString(T value);
 }
