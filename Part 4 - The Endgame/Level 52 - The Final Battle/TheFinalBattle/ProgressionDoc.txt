@@ -1,0 +1,24 @@
+﻿--------------------
+Progression Document
+--------------------
+
+-----------------------------
+Core Game: Building Character
+-------------------- 06-Oct -
+[X] The game contains characters with a name.
+[X] The characters take turns in the game.
+[X] The game has skeleton characters with the name "SKELETON".
+[X] The game can represent a party with a collection of characters.
+[X] The game must be able to run a battle between two parties (heroes vs monsters).
+  A battle runs for a couple of rounds, where each character in each party (heroes
+  first), take turn.
+[X] The game reports to the user whose turn it is (before the character takes it).
+[X] The game displays character action.
+[X] And for now runs a 1 vs 1 (both parties have a skeleton character only).
+
+Entities:
+[X] 1. Characters (have name)
+
+------------------------------
+Core Game: The True Programmer
+---------------------- 00-Oct -
