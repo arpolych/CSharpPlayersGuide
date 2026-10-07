@@ -13,7 +13,7 @@
          * this one as their base. - 07-Oct.
          */
         public string Name { get; }
-        public string Action { get; } = "NOTHING";
+        public virtual UnitAction[] Actions => new UnitAction[] { UnitAction.NOTHING };
 
         public Character(string name) => Name = name;
     }
@@ -23,9 +23,13 @@
         public Skeleton() : base("SKELETON") { }
     }
 
-    public class Player : Character
+    public class TrueProgrammer : Character
     {
-        public Player(string name) : base(name) { }
+        public TrueProgrammer(string name) : base(name) { }
     }
 
+    public enum UnitAction
+    {
+        NOTHING
+    }
 }

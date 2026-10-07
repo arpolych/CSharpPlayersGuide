@@ -2,14 +2,14 @@
 {
     public class Battle
     {
-        private readonly Party _heroes;
-        private readonly Party _monsters;
+        private readonly Player _player1;
+        private readonly Player _player2;
         //private Party _currentPartyTurn;
 
-        public Battle(Party heroes, Party monsters)
+        public Battle(Player p1, Player p2)
         {
-            _heroes = heroes;
-            _monsters = monsters;
+            _player1 = p1;
+            _player2 = p2;
         }
 
         public void Run()
@@ -22,17 +22,28 @@
 
             do
             {
-                TraverseCharacters(_heroes);
-                TraverseCharacters(_monsters);
+                TraversePlayerUnits(_player1);
+                TraversePlayerUnits(_player2);
                 Thread.Sleep(2_500);
             } while (true);
 
-            static void TraverseCharacters(Party aParty)
+            static void TraversePlayerUnits(Player p)
             {
-                foreach (var character in aParty.Characters)
+                /*
+                 * The game as it traverses the characters of the player's 
+                 * party should give him some time to choose the character's 
+                 * action.
+                 */
+                foreach (var character in p.ControlledUnits.Characters)
                 {
                     Console.WriteLine($"It is {character.Name}'s turn...");
-                    Console.WriteLine($"{character.Name} did {character.Action}.\n");
+
+                    // This is where the player will announce the char's action.
+                    UnitAction unitAction = UnitAction.NOTHING;
+
+                    p.SetUnitAction(character, ref unitAction);
+
+                    Console.WriteLine($"{character.Name} did {unitAction}.\n");
                 }
             }
         }

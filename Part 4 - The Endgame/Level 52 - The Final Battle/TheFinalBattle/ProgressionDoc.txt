@@ -30,4 +30,25 @@ Core Game: The True Programmer
 
 ------------------------------
 Core Game: Actions and Players
---------------------- 00-Oct -
+--------------------- 07-Oct -
+[X] Player controlling the party decides the action of each character.
+[X] There will be several action types to choose e.g.: do nothing, attack, and use
+	item.
+[X] There will be multiple player types (PC + User).
+[X] The game asks the Players for action input of their characters in the party.
+[X] Current available action types: "do-nothing".
+[X] Current available player types: "computer".
+[X] The game should represent multiple action types.
+[X] The game should represent multiple player types.
+[X] Runs automatically with these two new concepts (multiple action and player 
+	types). The output should look similar to the result from the previous 
+	challenges.
+
+------------------
+Core Game: Attacks
+--------- 00-Oct -
+Review code structure before proceeding and check program entities.
+[ ]
+[ ]
+[ ]
+[ ]

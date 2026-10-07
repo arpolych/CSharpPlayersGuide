@@ -1,14 +1,21 @@
 ﻿using TheFinalBattle;
 
-var gameChar1 = new Player(AskPlayerName());
+// Create characters
+var gameChar1 = new TrueProgrammer(AskPlayerName());
 var gameChar2 = new Skeleton();
 
+// Create parties
 var heroes = new Party();
 var monsters = new Party();
 heroes.AddCharacter(gameChar1);
 monsters.AddCharacter(gameChar2);
 
-var battle = new Battle(heroes, monsters);
+// Create players
+var player1 = new Player(heroes);
+var player2 = new Player(monsters);
+
+// Create battle
+var battle = new Battle(player1, player2);
 battle.Run();
 
 static string AskPlayerName()
