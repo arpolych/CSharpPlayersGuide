@@ -21,4 +21,13 @@ Entities:
 
 ------------------------------
 Core Game: The True Programmer
----------------------- 00-Oct -
+---------------------- 07-Oct -
+[X] Add player character, representing our "True Programmer" hero.
+[X] The user chooses the "True Programmer"'s name.
+[X] Before getting started, ask the user for the name.
+[X] The game now runs a battle between the "True Programmer" and that skeleton
+	from before.
+
+------------------------------
+Core Game: Actions and Players
+--------------------- 00-Oct -
