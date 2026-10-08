@@ -1,26 +1,17 @@
 ﻿using TheFinalBattle;
 
-// Create characters
-var gameChar1 = new TrueProgrammer(AskPlayerName());
-var gameChar2 = new Skeleton();
+var heroes = new Party(new ComputerPlayer());
+heroes.Units.Add(new TrueProgrammer(AskTrueProgrammerName()));
 
-// Create parties
-var heroes = new Party();
-var monsters = new Party();
-heroes.AddCharacter(gameChar1);
-monsters.AddCharacter(gameChar2);
+var monsters = new Party(new ComputerPlayer());
+monsters.Units.Add(new Skeleton());
 
-// Create players
-var player1 = new Player(heroes);
-var player2 = new Player(monsters);
-
-// Create battle
-var battle = new Battle(player1, player2);
+var battle = new Battle(heroes, monsters);
 battle.Run();
 
-static string AskPlayerName()
+static string AskTrueProgrammerName()
 {
-    Console.Write("What's the name of our True Programmer hero? ");
+    Console.Write("What is the name of the \"True Programmer\"? ");
 
     return Console.ReadLine() ?? "True Programmer";
 }

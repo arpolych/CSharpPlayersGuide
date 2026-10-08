@@ -2,11 +2,9 @@
 {
     public class Party
     {
-        public List<Character> Characters { get; } = new List<Character>();
+        public List<Character> Units { get; } = new List<Character>();
+        public IPlayer Player { get; }
 
-        public void AddCharacter(Character newCharacter)
-        {
-            if (newCharacter != null) Characters.Add(newCharacter);
-        }
+        public Party(IPlayer player) => Player = player;
     }
 }

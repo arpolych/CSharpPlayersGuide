@@ -4,51 +4,75 @@ Progression Document
 
 -----------------------------
 Core Game: Building Character
--------------------- 06-Oct -
-[X] The game contains characters with a name.
-[X] The characters take turns in the game.
-[X] The game has skeleton characters with the name "SKELETON".
-[X] The game can represent a party with a collection of characters.
-[X] The game must be able to run a battle between two parties (heroes vs monsters).
-  A battle runs for a couple of rounds, where each character in each party (heroes
-  first), take turn.
-[X] The game reports to the user whose turn it is (before the character takes it).
-[X] The game displays character action.
-[X] And for now runs a 1 vs 1 (both parties have a skeleton character only).
-
-Entities:
-[X] 1. Characters (have name)
+-------------------- 08-Oct -
+[X] Represent characters that have a name and can take turn.
+[X] Include skeleton characters that have the name "SKELETON".
+[X] Represent a party which is going to be a collection of characters.
+[X] Run a battle composed of 2 parties (heroes vs monsters). In each round each 
+	character in each party takes a turn.
+[X] The game reports to the user whose turn is it, before the character take it.
+[X] The only action taken by the characters during their turn is the do nothing.
+[X] Run a 1 vs 1 (skeleton vs skeleton) battle.
 
 ------------------------------
 Core Game: The True Programmer
----------------------- 07-Oct -
-[X] Add player character, representing our "True Programmer" hero.
-[X] The user chooses the "True Programmer"'s name.
-[X] Before getting started, ask the user for the name.
-[X] The game now runs a battle between the "True Programmer" and that skeleton
-	from before.
+--------------------- 08-Oct -
+[X] Add the "True Programmer" character (whose name is supplied by the user).
+[X] Before the game starts, ask for the "True Programmer"'s name.
+[X] Run a 1 vs 1 ("True Programmer" vs skeleton) battle.
 
 ------------------------------
 Core Game: Actions and Players
---------------------- 07-Oct -
-[X] Player controlling the party decides the action of each character.
-[X] There will be several action types to choose e.g.: do nothing, attack, and use
-	item.
-[X] There will be multiple player types (PC + User).
-[X] The game asks the Players for action input of their characters in the party.
-[X] Current available action types: "do-nothing".
-[X] Current available player types: "computer".
-[X] The game should represent multiple action types.
-[X] The game should represent multiple player types.
-[X] Runs automatically with these two new concepts (multiple action and player 
-	types). The output should look similar to the result from the previous 
-	challenges.
+--------------------- 08-Oct -
+[X] Represent action types and each action should be able to run.
+[X] Include a do-nothing action, which displays the same text as previously, when
+	run.
+[X] Represent different player types. Every player type has the ability to pick an
+	action for a character of their control, given the battle's current state.
+[X] Include a computer player type (which for now will pick the do-nothing 
+	action).
+[X] The game knows which player controls the party and is able to ask the player 
+	to select an action for each of their characters and then run the chosen 
+	action.
+[X] Assign a computer player to both parties of so far.
 
 ------------------
 Core Game: Attacks
---------- 00-Oct -
-Review code structure before proceeding and check program entities.
-[ ]
-[ ]
-[ ]
-[ ]
+--------- 08-Oct -
+[X] Represent attack types, all of which have name and capabilities (later on).
+[X] Include specific standard attack types. All characters have a standard attack, 
+	though the name may vary. For the "True Programmer" it's called "punch" and 
+	for the Skeleton it's called "bone crunch".
+[X] Represent an attack action (2nd action in the game so far). When this action 
+	is run, it should state:
+	1. the attacker
+	2. the attack name
+	3. and the target.
+	e.g.: "TOG used PUNCH on SKELETON".
+[X] Computer players now pick an attack action.
+
+------------------------
+Core Game: Damage and HP
+--------------- 08-Oct -
+[X] Characters track initial/maximum HP and their current HP. "True Programmer"
+	has 25 HP and the skeletons 5 HP.
+[X] Attacks produce "attack data" for any specific attack usage. For now this is 
+	just the amount of damage.
+[X] Punch attack deals 1 point of damage and bone crunch deals randomly 0 or 1.
+[X] The attack action asks the attack to determine how much damage it caused this 
+	time and reduces target's HP (careful not to go below 0).
+[X] The attack action reports how much damage was dealt to the target and the 
+	target's current HP status.
+
+----------------
+Core Game: Death
+------- 08-Oct -
+[X] After an attack, if target's HP = 0, remove then from the game.
+[X] When a character is removed from the game, display a defeated text for it.
+[X] Between game rounds, check party's remaining character count. If none are 
+	standing, the battle is over.
+[X] After the battle is over, display the appropriate victory/defeated text.
+
+------------------------
+Core Game: Battle Series
+--------------- 00-Oct -

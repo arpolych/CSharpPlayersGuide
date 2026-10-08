@@ -2,50 +2,57 @@
 {
     public class Battle
     {
-        private readonly Player _player1;
-        private readonly Player _player2;
-        //private Party _currentPartyTurn;
+        public Party Heroes { get; }
+        public Party Monsters { get; }
 
-        public Battle(Player p1, Player p2)
+        public Battle(Party heroes, Party monsters)
         {
-            _player1 = p1;
-            _player2 = p2;
+            Heroes = heroes;
+            Monsters = monsters;
         }
 
         public void Run()
         {
-            /*
-             * The battle is run forever (for now), starting with the heroes
-             * party.
-             */
-            // _currentPartyTurn = _heroes;
-
             do
             {
-                TraversePlayerUnits(_player1);
-                TraversePlayerUnits(_player2);
-                Thread.Sleep(2_500);
+                TraversePartyUnits(Heroes);
+                if (Monsters.Units.Count == 0)
+                {
+                    Console.WriteLine("The heroes won, and the Uncoded One was defeated!");
+                    return;
+                }
+
+                TraversePartyUnits(Monsters);
+                if (Heroes.Units.Count == 0)
+                {
+                    Console.WriteLine("The heroes lost and the Uncoded One's forces have prevailed!");
+                    return;
+                }
             } while (true);
 
-            static void TraversePlayerUnits(Player p)
+            #region - Helper method in traversing units of each party
+            void TraversePartyUnits(Party p)
             {
-                /*
-                 * The game as it traverses the characters of the player's 
-                 * party should give him some time to choose the character's 
-                 * action.
-                 */
-                foreach (var character in p.ControlledUnits.Characters)
+                foreach (Character unit in p.Units)
                 {
-                    Console.WriteLine($"It is {character.Name}'s turn...");
-
-                    // This is where the player will announce the char's action.
-                    UnitAction unitAction = UnitAction.NOTHING;
-
-                    p.SetUnitAction(character, ref unitAction);
-
-                    Console.WriteLine($"{character.Name} did {unitAction}.\n");
+                    Console.WriteLine($"It is {unit.Name}'s turn...");
+                    p.Player.ChooseAction(unit, this).Run(unit, this);
+                    Console.WriteLine();
                 }
             }
+            #endregion
+        }
+
+        public Party GetPartyFor(Character unit)
+        {
+            if (Heroes.Units.Contains(unit)) return Heroes;
+            else return Monsters;
+        }
+
+        public Party GetEnemyPartyFor(Character unit)
+        {
+            if (Heroes.Units.Contains(unit)) return Monsters;
+            else return Heroes;
         }
     }
 }
