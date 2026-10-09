@@ -75,4 +75,20 @@ Core Game: Death
 
 ------------------------
 Core Game: Battle Series
---------------- 00-Oct -
+--------------- 08-Oct -
+[X] Create another monster party with 2 skeletons.
+[X] When the hero party win the first monster party, he moves on to the second.
+
+--------------------------
+Core Game: The Uncoded One
+----------------- 08-Oct -
+[X] Define new character: "The Uncoded One". It has 15 HP and an unraveling attack
+	that randomly deals [0 to 2] damage when used.
+[X] Add a third battle with this character.
+
+-----------------------------
+Core Game: The Player Decides
+-------------------- 09-Oct -
+[X] Human player.
+[X] Gameplay modes.
+

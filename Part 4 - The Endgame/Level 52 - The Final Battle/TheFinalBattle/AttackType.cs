@@ -21,6 +21,13 @@
 
         public override AttackData GenerateAttackData() => new(random.Next(2));
     }
+
+    public class UnravelingAttack : AttackType
+    {
+        public override string Name => "UNRAVELING ATTACK";
+
+        public override AttackData GenerateAttackData() => new(random.Next(3));
+    }
     #endregion
 
     public record class AttackData(int Damage);

@@ -3,12 +3,16 @@
     public class Battle
     {
         public Party Heroes { get; }
-        public Party Monsters { get; }
+        public Party Monsters { get; private set; }
+        public Party[] MonsterWaves { get; }
+        private bool IsNextWaveAvailable => _currentWaveIndex < MonsterWaves.Length;
+        private int _currentWaveIndex = 0;
 
-        public Battle(Party heroes, Party monsters)
+        public Battle(Party heroes, params Party[] monsterWaves)
         {
             Heroes = heroes;
-            Monsters = monsters;
+            MonsterWaves = monsterWaves;
+            Monsters = MonsterWaves[_currentWaveIndex];
         }
 
         public void Run()
@@ -18,8 +22,18 @@
                 TraversePartyUnits(Heroes);
                 if (Monsters.Units.Count == 0)
                 {
-                    Console.WriteLine("The heroes won, and the Uncoded One was defeated!");
-                    return;
+                    _currentWaveIndex++;
+                    if (IsNextWaveAvailable)
+                    {
+                        Console.WriteLine("The heroes won this monster wave!");
+                        Monsters = MonsterWaves[_currentWaveIndex];
+                        continue;
+                    }
+                    else
+                    {
+                        Console.WriteLine("The heroes won, and the Uncoded One was defeated!");
+                        return;
+                    }
                 }
 
                 TraversePartyUnits(Monsters);

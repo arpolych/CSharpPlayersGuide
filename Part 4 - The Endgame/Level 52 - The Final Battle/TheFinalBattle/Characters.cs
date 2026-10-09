@@ -36,7 +36,20 @@
         public TrueProgrammer(string name)
         {
             Name = name;
-            base.MaxHP = 25;
+            base.MaxHP = 35;
+            base.CurrentHP = base.MaxHP;
+        }
+    }
+
+    public class TheUncodedOne : Character
+    {
+        public override string Name => "The Uncoded One";
+
+        public override AttackType DefaultAttack => new UnravelingAttack();
+
+        public TheUncodedOne()
+        {
+            base.MaxHP = 15;
             base.CurrentHP = base.MaxHP;
         }
     }
