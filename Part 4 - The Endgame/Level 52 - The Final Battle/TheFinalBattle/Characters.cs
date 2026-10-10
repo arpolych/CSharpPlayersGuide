@@ -7,6 +7,12 @@
         public int MaxHP { get; protected set; }
         public int CurrentHP { get; protected set; }
 
+        public void ReceivedHeal(int amount)
+        {
+            CurrentHP += amount;
+            if (CurrentHP > MaxHP) CurrentHP = MaxHP;
+        }
+
         public void ReceivedDamage(int amount)
         {
             CurrentHP -= amount;

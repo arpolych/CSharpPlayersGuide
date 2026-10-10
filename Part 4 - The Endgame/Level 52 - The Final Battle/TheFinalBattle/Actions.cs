@@ -31,4 +31,15 @@
             }
         }
     }
+
+    public class UseConsumableItemAction : IAction
+    {
+        public ConsumableItem Item { get; }
+
+        public UseConsumableItemAction(ConsumableItem itemToUse)
+            => Item = itemToUse;
+
+        public void Run(Character activatedBy, Battle battleState)
+            => Item.ApplyEffect(activatedBy, battleState);
+    }
 }

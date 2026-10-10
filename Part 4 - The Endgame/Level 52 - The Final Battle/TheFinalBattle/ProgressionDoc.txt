@@ -92,3 +92,51 @@ Core Game: The Player Decides
 [X] Human player.
 [X] Gameplay modes.
 
+----------------------------
+Expansion: The Game's Status
+------------------- 10-Oct -
+[X] Display battle status. All characters and their HP status must be shown.
+[X] Distinguish whose character turn it is with color.
+
+----------------
+Expansion: Items
+------- 10-Oct -
+[X] Create "Consumable Items". A specific one (for now) is going to be the "Health
+	potion". That potion increases the character's HP by 10 (without exceeding) its
+	MaxHP value.
+[X] Create action that allows you to use an item. 
+[X] The entire party shares an inventory of items. Heroes will get 3 health 
+	potions, whereas each monster party gets 1.
+[ ] The game should support the "Use Item" action, along with the item to use. 
+	When the action runs, the item applies its effect and gets removed from the 
+	inventory.
+[ ] Computer player conditions for using a potion.
+[ ] Human player should have the option to use a potion if the party got one.
+l
+---------------
+Expansion: Gear
+------ 00-Oct -
+
+---------------------------
+Expansion: Stolen Inventory
+------------------ 00-Oct -
+
+-----------------------
+Expansion: Vin Fletcher
+-------------- 00-Oct -
+
+---------------------------
+Expansion: Attack Modifiers
+------------------ 00-Oct -
+
+-----------------------
+Expansion: Damage Types
+-------------- 00-Oct -
+
+--------------------------
+Expansion: Making it Yours
+----------------- 00-Oct -
+
+----------------------------
+Expansion: Restoring Balance
+------------------- 00-Oct -

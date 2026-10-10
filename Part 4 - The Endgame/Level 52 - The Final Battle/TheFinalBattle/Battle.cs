@@ -20,26 +20,29 @@
             do
             {
                 TraversePartyUnits(Heroes);
+
                 if (Monsters.Units.Count == 0)
                 {
                     _currentWaveIndex++;
+
                     if (IsNextWaveAvailable)
                     {
-                        Console.WriteLine("The heroes won this monster wave!");
+                        ColoredConsole.WriteLine("The heroes won this monster wave!", ConsoleColor.Green);
                         Monsters = MonsterWaves[_currentWaveIndex];
                         continue;
                     }
                     else
                     {
-                        Console.WriteLine("The heroes won, and the Uncoded One was defeated!");
+                        ColoredConsole.WriteLine("The heroes won, and the Uncoded One was defeated!", ConsoleColor.Green);
                         return;
                     }
                 }
 
                 TraversePartyUnits(Monsters);
+
                 if (Heroes.Units.Count == 0)
                 {
-                    Console.WriteLine("The heroes lost and the Uncoded One's forces have prevailed!");
+                    ColoredConsole.WriteLine("The heroes lost and the Uncoded One's forces have prevailed!", ConsoleColor.Red);
                     return;
                 }
             } while (true);
@@ -49,6 +52,7 @@
             {
                 foreach (Character unit in p.Units)
                 {
+                    DisplayBattleStatus(unit);
                     Console.WriteLine($"It is {unit.Name}'s turn...");
                     p.Player.ChooseAction(unit, this).Run(unit, this);
                     Console.WriteLine();
@@ -67,6 +71,31 @@
         {
             if (Heroes.Units.Contains(unit)) return Monsters;
             else return Heroes;
+        }
+
+        public void DisplayBattleStatus(Character unitInTurn)
+        {
+            var displayUnitStatuses =
+                (Party p) =>
+                {
+                    foreach (Character unit in p.Units)
+                    {
+                        var unitBattleStatus = $"{unit.Name} >> ( {unit.GetHPStatus()} )";
+
+                        if (unit.Equals(unitInTurn)) ColoredConsole.WriteLine(unitBattleStatus, ConsoleColor.Yellow);
+                        else Console.WriteLine(unitBattleStatus);
+                    }
+                };
+
+            Console.WriteLine("\n======= *** BATTLE *** =======\n");
+            // Display heroes party
+            displayUnitStatuses(Heroes);
+
+            Console.WriteLine("\n===========   VS   ===========\n");
+
+            // Display monster party
+            displayUnitStatuses(Monsters);
+            Console.WriteLine("\n=========== ****** ===========\n");
         }
     }
 }

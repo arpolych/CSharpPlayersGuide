@@ -20,7 +20,7 @@
         public IAction ChooseAction(Character unit, Battle currentState)
         {
             // Present action menu
-            Console.WriteLine($"1 - Standard Attac ({unit.DefaultAttack.Name})");
+            Console.WriteLine($"1 - Standard Attack ({unit.DefaultAttack.Name})");
             Console.WriteLine("2 - Do Nothing");
             // Get User choicel
             // Translate choice to IAction object

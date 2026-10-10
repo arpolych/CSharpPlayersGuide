@@ -63,21 +63,33 @@ static string AskTrueProgrammerName()
 static void InitializeHeroes(IPlayer heroesPlayer, out Party heroes)
 {
     heroes = new Party(heroesPlayer);
+    // Adding units...
     heroes.Units.Add(new TrueProgrammer(AskTrueProgrammerName()));
+
+    // Adding consumable items...
+    heroes.Items.Add(new HealthPotion());
+    heroes.Items.Add(new HealthPotion());
+    heroes.Items.Add(new HealthPotion());
 }
 
 static void InitializeMonsters(IPlayer monstersPlayer, out Party monstersWave1, out Party monstersWave2, out Party monstersWave3)
 {
     // Monster Wave 1
     monstersWave1 = new Party(monstersPlayer);
+    // Adding units and consumables...
     monstersWave1.Units.Add(new Skeleton());
+    monstersWave1.Items.Add(new HealthPotion());
 
     // Monster Wave 2
     monstersWave2 = new Party(monstersPlayer);
+    // Adding units and consumables...
     monstersWave2.Units.Add(new Skeleton());
     monstersWave2.Units.Add(new Skeleton());
+    monstersWave2.Items.Add(new HealthPotion());
 
     // Monster Wave 3
     monstersWave3 = new Party(monstersPlayer);
+    // Adding units and consumables...
     monstersWave3.Units.Add(new TheUncodedOne());
+    monstersWave3.Items.Add(new HealthPotion());
 }
