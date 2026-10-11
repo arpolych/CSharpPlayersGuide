@@ -107,15 +107,15 @@ Expansion: Items
 [X] Create action that allows you to use an item. 
 [X] The entire party shares an inventory of items. Heroes will get 3 health 
 	potions, whereas each monster party gets 1.
-[ ] The game should support the "Use Item" action, along with the item to use. 
+[X] The game should support the "Use Item" action, along with the item to use. 
 	When the action runs, the item applies its effect and gets removed from the 
 	inventory.
-[ ] Computer player conditions for using a potion.
-[ ] Human player should have the option to use a potion if the party got one.
-l
+[X] Computer player conditions for using a potion.
+[X] Human player should have the option to use a potion if the party got one.
+
 ---------------
 Expansion: Gear
------- 00-Oct -
+------ 11-Oct -
 
 ---------------------------
 Expansion: Stolen Inventory

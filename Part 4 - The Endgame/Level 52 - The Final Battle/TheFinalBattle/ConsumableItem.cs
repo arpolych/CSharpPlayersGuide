@@ -15,6 +15,11 @@
         public HealthPotion() => HealingValue = 10;
 
         public override void ApplyEffect(Character activatedBy, Battle battleState)
-            => activatedBy.ReceivedHeal(HealingValue);
+        {
+            var message = $"{activatedBy.Name} has used a healing potion! (+{HealingValue} HP)";
+
+            activatedBy.ReceivedHeal(HealingValue);
+            ColoredConsole.WriteLine(message, ConsoleColor.Magenta);
+        }
     }
 }

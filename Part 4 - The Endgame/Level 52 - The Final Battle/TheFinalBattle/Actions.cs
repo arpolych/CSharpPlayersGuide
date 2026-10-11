@@ -34,12 +34,22 @@
 
     public class UseConsumableItemAction : IAction
     {
-        public ConsumableItem Item { get; }
+        public List<ConsumableItem> Items { get; }
 
-        public UseConsumableItemAction(ConsumableItem itemToUse)
-            => Item = itemToUse;
+        public UseConsumableItemAction(List<ConsumableItem> itemsToUse)
+            => Items = itemsToUse;
 
         public void Run(Character activatedBy, Battle battleState)
-            => Item.ApplyEffect(activatedBy, battleState);
+        {
+            /*
+             * At this stage we assume that all potions are healing ones.
+             * Thus, it will straight-up use the first in the inventory.
+             */
+            if (Items.FirstOrDefault() is ConsumableItem itemToUse)
+            {
+                itemToUse?.ApplyEffect(activatedBy, battleState);
+                Items.Remove(itemToUse!);
+            }
+        }
     }
 }
