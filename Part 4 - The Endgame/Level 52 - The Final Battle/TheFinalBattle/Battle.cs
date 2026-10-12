@@ -73,6 +73,8 @@
             else return Heroes;
         }
 
+        public IPlayer GetPlayerFor(Character unit) => GetPartyFor(unit).Player;
+
         public void DisplayBattleStatus(Character unitInTurn)
         {
             var displayUnitStatuses =

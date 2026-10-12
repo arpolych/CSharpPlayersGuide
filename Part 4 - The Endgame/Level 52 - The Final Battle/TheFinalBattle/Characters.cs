@@ -3,9 +3,10 @@
     public abstract class Character
     {
         public abstract string Name { get; }
-        public abstract AttackType DefaultAttack { get; }
+        public abstract StandardAttackType DefaultAttack { get; }
         public int MaxHP { get; protected set; }
         public int CurrentHP { get; protected set; }
+        public IEquippableGearItem? ActiveAttackGear { get; set; }
 
         public void ReceivedHeal(int amount)
         {
@@ -25,7 +26,7 @@
     public class Skeleton : Character
     {
         public override string Name => "SKELETON";
-        public override AttackType DefaultAttack => new BoneCrunch();
+        public override StandardAttackType DefaultAttack => new BoneCrunch();
 
         public Skeleton()
         {
@@ -37,13 +38,14 @@
     public class TrueProgrammer : Character
     {
         public override string Name { get; }
-        public override AttackType DefaultAttack => new Punch();
+        public override StandardAttackType DefaultAttack => new Punch();
 
         public TrueProgrammer(string name)
         {
             Name = name;
             base.MaxHP = 35;
             base.CurrentHP = base.MaxHP;
+            base.ActiveAttackGear = new Sword();
         }
     }
 
@@ -51,7 +53,7 @@
     {
         public override string Name => "The Uncoded One";
 
-        public override AttackType DefaultAttack => new UnravelingAttack();
+        public override StandardAttackType DefaultAttack => new UnravelingAttack();
 
         public TheUncodedOne()
         {

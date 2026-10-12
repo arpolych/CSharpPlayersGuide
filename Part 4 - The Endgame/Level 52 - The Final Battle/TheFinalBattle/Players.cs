@@ -24,7 +24,7 @@
              *    Condition 2: unit's HP is below half.
              */
             var currentRandomChance = _random.Next(101); // [0 - 100] values.
-            var unitItems = currentState.GetPartyFor(unit).Items;
+            var unitItems = currentState.GetPartyFor(unit).Consumables;
             int useConsumablesChance = CalculateConsumableActionChance(),
                 useStandardAttackChance = 95 - useConsumablesChance,
                 doNothingChance = 5;
@@ -71,7 +71,7 @@
 
         public ActionChoiceMenu(Character unit, Battle state)
         {
-            if (state.GetPartyFor(unit).Items is List<ConsumableItem> unitPartyItems && unitPartyItems.Count > 0)
+            if (state.GetPartyFor(unit).Consumables is List<ConsumableItem> unitPartyItems && unitPartyItems.Count > 0)
             {
                 ChoiceMenu.Add(
                     new ActionChoiceMenuItem($"Use Consumable Item ({unitPartyItems.Count})",

@@ -116,6 +116,28 @@ Expansion: Items
 ---------------
 Expansion: Gear
 ------ 11-Oct -
+[X] Create "Gear" objects. All character gears have a name and an attack type they provide.
+[X] Each character is able to equip 1 gear piece.
+[X] Each party has a collection of unequipped gear.
+[ ] Introduce the "Equip Gear" action. When it runs, it moves the gear from the shared inventory
+	to the character. If the unit already has smth equipped, it gets unequipped and placed back 
+	to the shared inventory.
+[ ] Computer player conditions for equipping gear. (In addition, the computer should prioritize
+	using potions over equipping gear.). Also, it should prefer using attacks that are combined 
+	with gear, since they're stronger.
+[ ] Human player has the gear action option, and have an option list from what gear to select from.
+	However, an option to use a standard attack should be displayed also.
+[X] The "True Programmer" has a "sword" equipped from the start of the game. This sword has a 
+	"slash attack" that deals 2 damage.
+[ ] Create a "dagger" with a "stab" attack that deals 1 point of damage. And have the 1st 
+	monster wave have it equipped, whereas in the 2nd one, make 2 of them available in the 
+	shared inventory.
+[ ] Show equipped gear with the "Game Status".
+
+*** Display + Receive user's item choice and then execute...
+*** 11-Oct: I believe we need to refine our structure from the begining now that I'm more sure of
+***			what is going on and how to do it. As well as how to use classes, abstracts, interfaces
+***			and so on.
 
 ---------------------------
 Expansion: Stolen Inventory

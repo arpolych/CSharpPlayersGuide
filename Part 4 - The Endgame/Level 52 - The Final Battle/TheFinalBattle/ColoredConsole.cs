@@ -2,6 +2,16 @@
 {
     public static class ColoredConsole
     {
+        public static string ReadLine(ConsoleColor color)
+        {
+            Console.ForegroundColor = color;
+            var userInput = Console.ReadLine() ?? "(read-error)#ColoredConsole";
+
+            Console.BackgroundColor = ConsoleColor.White;
+
+            return userInput;
+        }
+
         public static void Write(string str, ConsoleColor color)
         {
             Console.ForegroundColor = color;
