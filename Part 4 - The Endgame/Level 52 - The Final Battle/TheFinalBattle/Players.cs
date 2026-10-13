@@ -2,14 +2,48 @@
 {
     public interface IPlayer
     {
-        IAction ChooseAction(Character unit, Battle currentState);
+        ConsoleColor Color { get; }
+        IAction ChooseAction(Character playerUnit, Battle gameState);
+        ItemsGroupInfo ChooseItemTypeGroup(IEnumerable<ItemsGroupInfo> itemTypeGroups);
     }
 
-    public class ComputerPlayer : IPlayer
+    public abstract class Player : IPlayer
     {
-        private readonly Random _random = new();
+        protected readonly Random _random = new();
+        public ConsoleColor Color { get; protected set; }
 
-        public IAction ChooseAction(Character unit, Battle currentState)
+        protected readonly static ConsoleColor[,] GameColors = {
+            // Light Colors - first array
+            { ConsoleColor.Blue, ConsoleColor.Red, ConsoleColor.Yellow, ConsoleColor.Green, ConsoleColor.Cyan, ConsoleColor.Magenta, ConsoleColor.Gray },
+            // Equivalent Dark Colors - second array
+            { ConsoleColor.DarkBlue, ConsoleColor.DarkRed, ConsoleColor.DarkYellow, ConsoleColor.DarkGreen, ConsoleColor.DarkCyan, ConsoleColor.DarkMagenta, ConsoleColor.DarkGray } };
+
+        public Player() => AssignRandomColor();
+
+        public Player(ConsoleColor playerColor) => Color = playerColor;
+
+        public abstract IAction ChooseAction(Character playerUnit, Battle gameState);
+
+        public abstract ItemsGroupInfo ChooseItemTypeGroup(IEnumerable<ItemsGroupInfo> itemTypeGroups);
+
+        protected virtual void AssignRandomColor()
+        {
+            int index1 = _random.Next(GameColors.GetLength(0)),
+                index2 = _random.Next(GameColors.GetLength(1));
+
+            Color = GameColors[index1, index2];
+        }
+    }
+
+    public class ComputerPlayer : Player
+    {
+        public ComputerPlayer()
+            : base() { }
+
+        public ComputerPlayer(ConsoleColor playerColor)
+            : base(playerColor) { }
+
+        public override IAction ChooseAction(Character unit, Battle currentState)
         {
             Thread.Sleep(850); // - Thinking...
 
@@ -24,7 +58,7 @@
              *    Condition 2: unit's HP is below half.
              */
             var currentRandomChance = _random.Next(101); // [0 - 100] values.
-            var unitItems = currentState.GetPartyFor(unit).Consumables;
+            var unitItems = currentState.GetPartyFor(unit).ConsumablesInventory;
             int useConsumablesChance = CalculateConsumableActionChance(),
                 useStandardAttackChance = 95 - useConsumablesChance,
                 doNothingChance = 5;
@@ -33,7 +67,7 @@
                 return new DoNothingAction();
             else if (currentRandomChance <= (doNothingChance + useStandardAttackChance))
                 return new AttackAction();
-            else return new UseConsumableItemAction(unitItems);
+            else return new UseInventoryItemAction<ConsumableItem>(unitItems);
 
             int CalculateConsumableActionChance()
             {
@@ -47,54 +81,112 @@
                 return (flag1 && flag2) ? 25 : 0;
             }
         }
-    }
 
-    public class HumanPlayer : IPlayer
-    {
-        public IAction ChooseAction(Character unit, Battle currentState)
+        public override ItemsGroupInfo ChooseItemTypeGroup(IEnumerable<ItemsGroupInfo> itemTypeGroups)
         {
-            // Present action menu
-            var actionChoiceMenu = new ActionChoiceMenu(unit, currentState);
-
-            Console.WriteLine(actionChoiceMenu);
-            Console.Write("What's your choice? ");
-
-            var userChoice = Convert.ToInt32(Console.ReadLine()) - 1;
-
-            return actionChoiceMenu.ChoiceMenu[userChoice].ActionItem;
+            throw new NotImplementedException();
         }
     }
 
-    public class ActionChoiceMenu
+    public class HumanPlayer : Player
     {
-        public List<ActionChoiceMenuItem> ChoiceMenu { get; } = new();
+        public ConsoleColor InputColor { get; protected set; }
 
-        public ActionChoiceMenu(Character unit, Battle state)
+        public HumanPlayer()
+            : base() => AssignRandomColor();
+
+        public HumanPlayer(ConsoleColor playerColor, ConsoleColor playerInputColor)
+            : base(playerColor) => InputColor = playerInputColor;
+
+        public override IAction ChooseAction(Character playerUnit, Battle gameState)
         {
-            if (state.GetPartyFor(unit).Consumables is List<ConsumableItem> unitPartyItems && unitPartyItems.Count > 0)
+            var availableActions = gameState.GetAvailablePlayerActions(playerUnit);
+            var consoleMenu = new ConsoleMenu<ActionConsoleMenuItem>(availableActions);
+
+            return ChooseFromConsoleMenu(consoleMenu).playerAction;
+        }
+
+        private T ChooseFromConsoleMenu<T>(ConsoleMenu<T> displayedMenu, string userMessage = "What are you going to choose? ")
+        {
+            Console.WriteLine(displayedMenu);
+
+            do
             {
-                ChoiceMenu.Add(
-                    new ActionChoiceMenuItem($"Use Consumable Item ({unitPartyItems.Count})",
-                    new UseConsumableItemAction(unitPartyItems)));
-            }
+                try
+                {
+                    string playerInput = GetConsoleInput(userMessage);
 
-            ChoiceMenu.Add(new ActionChoiceMenuItem("Standard Attack", new AttackAction()));
-            ChoiceMenu.Add(new ActionChoiceMenuItem("Do Nothing", new DoNothingAction()));
+                    return displayedMenu.RetrieveElement(Convert.ToInt32(playerInput));
+                }
+                catch (Exception)
+                {
+                    continue;
+                }
+            }
+            while (true);
         }
+
+        public override ItemsGroupInfo ChooseItemTypeGroup(IEnumerable<ItemsGroupInfo> itemTypeGroups)
+        {
+            var consoleMenu = new ConsoleMenu<ItemsGroupInfo>(itemTypeGroups);
+            Console.WriteLine(consoleMenu);
+
+            do
+            {
+                try
+                {
+                    string playerInput = GetConsoleInput("Which item do you want? ");
+
+                    return consoleMenu.RetrieveElement(Convert.ToInt32(playerInput));
+                }
+                catch (Exception)
+                {
+                    continue;
+                }
+            }
+            while (true);
+        }
+
+        public string GetConsoleInput(string userMessage)
+        {
+            ColoredConsole.Write(userMessage, Color);
+
+            return ColoredConsole.ReadLine(InputColor);
+        }
+
+        protected override void AssignRandomColor()
+        {
+            int index = _random.Next(GameColors.GetLength(1));
+
+            Color = GameColors[0, index];
+            InputColor = GameColors[1, index];
+        }
+    }
+
+    public class ConsoleMenu<T>
+    {
+        private readonly string? _menuHeading;
+        private readonly IEnumerable<T> _collection;
+
+        public ConsoleMenu(IEnumerable<T> collection, string? menuHeading = null)
+        {
+            _menuHeading = menuHeading;
+            _collection = collection;
+        }
+
+        public T RetrieveElement(int elementNum) => _collection.ElementAt(elementNum - 1);
 
         public override string ToString()
         {
-            string choiceMenu = string.Empty;
-            int itemNumber = 1;
+            string consoleText = (_menuHeading != null) ? $"{_menuHeading}\n" : string.Empty;
+            int elementNum = 1;
 
-            foreach (var actionItem in ChoiceMenu)
+            foreach (var element in _collection)
             {
-                choiceMenu += $"{itemNumber++} - {actionItem.Description}\n";
+                consoleText += $"{elementNum++}. {element}\n";
             }
 
-            return choiceMenu;
+            return consoleText;
         }
-
-        public record class ActionChoiceMenuItem(string Description, IAction ActionItem);
     }
 }

@@ -7,7 +7,7 @@
             Console.ForegroundColor = color;
             var userInput = Console.ReadLine() ?? "(read-error)#ColoredConsole";
 
-            Console.BackgroundColor = ConsoleColor.White;
+            Console.ForegroundColor = ConsoleColor.White;
 
             return userInput;
         }

@@ -21,43 +21,56 @@ static void InitializePlayers(out IPlayer heroesPlayer, out IPlayer monstersPlay
     switch (AskGameplayMode())
     {
         default:
-        case "1":
+        case 1:
             {
-                heroesPlayer = new HumanPlayer();
-                monstersPlayer = new ComputerPlayer();
+                heroesPlayer = new HumanPlayer(ConsoleColor.DarkCyan, ConsoleColor.Cyan);
+                monstersPlayer = new ComputerPlayer(ConsoleColor.DarkRed);
                 break;
             }
-        case "2":
+        case 2:
             {
-                heroesPlayer = new ComputerPlayer();
-                monstersPlayer = new ComputerPlayer();
+                heroesPlayer = new ComputerPlayer(ConsoleColor.DarkCyan);
+                monstersPlayer = new ComputerPlayer(ConsoleColor.DarkRed);
                 break;
             }
-        case "3":
+        case 3:
             {
-                heroesPlayer = new HumanPlayer();
-                monstersPlayer = new HumanPlayer();
+                heroesPlayer = new HumanPlayer(ConsoleColor.DarkCyan, ConsoleColor.Cyan);
+                monstersPlayer = new HumanPlayer(ConsoleColor.DarkRed, ConsoleColor.Red);
                 break;
             }
     }
 
-    static string? AskGameplayMode()
+    static int AskGameplayMode()
     {
-        Console.WriteLine("Choose a gameplay option (1, 2, or 3):");
-        Console.WriteLine("1. Player vs Computer");
+        ColoredConsole.WriteLine("Choose a gameplay option (1, 2, or 3):", ConsoleColor.DarkYellow);
+        Console.WriteLine("1. Human vs Computer");
         Console.WriteLine("2. Computer vs Computer");
-        Console.WriteLine("3. Player vs Player");
-        Console.Write("\nYour choice: ");
+        Console.WriteLine("3. Human vs Human");
+        ColoredConsole.Write("\nYour choice: ", ConsoleColor.DarkYellow);
+        var userInput = ColoredConsole.ReadLine(ConsoleColor.Yellow);
 
-        return Console.ReadLine();
+        try
+        {
+            var gameplayMode = Convert.ToInt32(userInput);
+
+            if (gameplayMode >= 1 && gameplayMode <= 3) return gameplayMode;
+            else throw new Exception("Invalid gameplay mode!");
+        }
+        catch (Exception)
+        {
+            ColoredConsole.WriteLine(">> Invalid gameplay mode choice, try again!\n", ConsoleColor.Red);
+
+            return AskGameplayMode();
+        }
     }
 }
 
 static string AskTrueProgrammerName()
 {
-    Console.Write("What is the name of the \"True Programmer\"? ");
+    ColoredConsole.Write("What is the name of the \"True Programmer\"? ", ConsoleColor.DarkYellow);
 
-    return Console.ReadLine() ?? "True Programmer";
+    return ColoredConsole.ReadLine(ConsoleColor.Yellow) ?? "True Programmer";
 }
 
 static void InitializeHeroes(IPlayer heroesPlayer, out Party heroes)
@@ -67,9 +80,9 @@ static void InitializeHeroes(IPlayer heroesPlayer, out Party heroes)
     heroes.Units.Add(new TrueProgrammer(AskTrueProgrammerName()));
 
     // Adding consumable items...
-    heroes.Consumables.Add(new HealthPotion());
-    heroes.Consumables.Add(new HealthPotion());
-    heroes.Consumables.Add(new HealthPotion());
+    heroes.ConsumablesInventory.Add(new HealthPotion());
+    heroes.ConsumablesInventory.Add(new HealthPotion());
+    heroes.ConsumablesInventory.Add(new HealthPotion());
 }
 
 static void InitializeMonsters(IPlayer monstersPlayer, out Party monstersWave1, out Party monstersWave2, out Party monstersWave3)
@@ -78,18 +91,18 @@ static void InitializeMonsters(IPlayer monstersPlayer, out Party monstersWave1, 
     monstersWave1 = new Party(monstersPlayer);
     // Adding units and consumables...
     monstersWave1.Units.Add(new Skeleton());
-    monstersWave1.Consumables.Add(new HealthPotion());
+    monstersWave1.ConsumablesInventory.Add(new HealthPotion());
 
     // Monster Wave 2
     monstersWave2 = new Party(monstersPlayer);
     // Adding units and consumables...
     monstersWave2.Units.Add(new Skeleton());
     monstersWave2.Units.Add(new Skeleton());
-    monstersWave2.Consumables.Add(new HealthPotion());
+    monstersWave2.ConsumablesInventory.Add(new HealthPotion());
 
     // Monster Wave 3
     monstersWave3 = new Party(monstersPlayer);
     // Adding units and consumables...
     monstersWave3.Units.Add(new TheUncodedOne());
-    monstersWave3.Consumables.Add(new HealthPotion());
+    monstersWave3.ConsumablesInventory.Add(new HealthPotion());
 }

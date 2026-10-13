@@ -6,7 +6,7 @@
         public abstract StandardAttackType DefaultAttack { get; }
         public int MaxHP { get; protected set; }
         public int CurrentHP { get; protected set; }
-        public IEquippableGearItem? ActiveAttackGear { get; set; }
+        public EquippableGearItem? EquippedGear { get; set; }
 
         public void ReceivedHeal(int amount)
         {
@@ -45,7 +45,7 @@
             Name = name;
             base.MaxHP = 35;
             base.CurrentHP = base.MaxHP;
-            base.ActiveAttackGear = new Sword();
+            base.EquippedGear = new Sword();
         }
     }
 

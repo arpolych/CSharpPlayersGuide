@@ -3,14 +3,15 @@
     public interface IUnitItem
     {
         string Name { get; }
+        void Apply(Character playerUnit, Battle gameState);
     }
 
-    #region - Consumable character items
+    #region - Consumable items for player units/characters.
     public abstract class ConsumableItem : IUnitItem
     {
         public abstract string Name { get; }
 
-        public abstract void ApplyEffect(Character activatedBy, Battle battleState);
+        public abstract void Apply(Character playerUnit, Battle gameState);
     }
 
     public class HealthPotion : ConsumableItem
@@ -20,34 +21,47 @@
 
         public HealthPotion() => HealingValue = 10;
 
-        public override void ApplyEffect(Character activatedBy, Battle battleState)
+        public override void Apply(Character playerUnit, Battle gameState)
         {
-            var message = $"{activatedBy.Name} has used a healing potion! (+{HealingValue} HP)";
+            var message = $"{playerUnit.Name} has used a healing potion! (+{HealingValue} HP)";
 
-            activatedBy.ReceivedHeal(HealingValue);
-            ColoredConsole.WriteLine(message, ConsoleColor.Magenta);
+            playerUnit.ReceivedHeal(HealingValue);
+            ColoredConsole.WriteLine(message, gameState.GetPlayerFor(playerUnit).Color);
         }
     }
     #endregion
 
-    #region - Equippable character gear items
-    public interface IEquippableGearItem : IUnitItem
+    #region - Equippable gear items for player units/characters.
+    public abstract class EquippableGearItem : IUnitItem
     {
-        SpecialAttackType GearAttackType { get; }
+        public abstract string Name { get; }
+        public abstract SpecialAttackType GearAttackType { get; }
+
+        public virtual void Apply(Character playerUnit, Battle gameState)
+        {
+            var message = $"{playerUnit.Name} ";
+
+            if (playerUnit.EquippedGear == null)
+                message += $"is now equipped with a gear item - {Name}!";
+            else
+                message += $"has had the gear item, {playerUnit.EquippedGear.Name}, swapped with {Name}!";
+
+            ColoredConsole.WriteLine(message, gameState.GetPlayerFor(playerUnit).Color);
+        }
     }
 
-    public class Sword : IEquippableGearItem
+    public class Sword : EquippableGearItem
     {
-        public string Name => "SWORD";
+        public override string Name => "SWORD";
 
-        public SpecialAttackType GearAttackType { get; } = new SlashAttackType();
+        public override SpecialAttackType GearAttackType { get; } = new SlashAttackType();
     }
 
-    public class Dagger : IEquippableGearItem
+    public class Dagger : EquippableGearItem
     {
-        public string Name => "DAGGER";
+        public override string Name => "DAGGER";
 
-        public SpecialAttackType GearAttackType { get; } = new StabAttackType();
+        public override SpecialAttackType GearAttackType { get; } = new StabAttackType();
     }
     #endregion
 }

@@ -53,7 +53,7 @@
                 foreach (Character unit in p.Units)
                 {
                     DisplayBattleStatus(unit);
-                    Console.WriteLine($"It is {unit.Name}'s turn...");
+                    ColoredConsole.WriteLine($"It is {unit.Name}'s turn...", GetPlayerFor(unit).Color);
                     p.Player.ChooseAction(unit, this).Run(unit, this);
                     Console.WriteLine();
                 }
@@ -74,6 +74,29 @@
         }
 
         public IPlayer GetPlayerFor(Character unit) => GetPartyFor(unit).Player;
+
+        public IEnumerable<ActionConsoleMenuItem> GetAvailablePlayerActions(Character playerUnit)
+        {
+            var availableActions = new List<ActionConsoleMenuItem>();
+
+            if (GetPartyFor(playerUnit).ConsumablesInventory is List<ConsumableItem> partyConsumables
+                && partyConsumables.Count > 0)
+            {
+                var useConsumablesAction = new UseInventoryItemAction<ConsumableItem>(partyConsumables);
+                int consumableNum = partyConsumables.Count;
+                availableActions.Add(
+                    new ActionConsoleMenuItem(useConsumablesAction,
+                    $"Use Consumables{(consumableNum == 1 ? "" : $" ({consumableNum})")}"));
+            }
+
+            #region - The always available actions for all player units.
+            availableActions.Add(new ActionConsoleMenuItem(new AttackAction(), "Standard Attack"));
+            availableActions.Add(new ActionConsoleMenuItem(new DoNothingAction(), "Do Nothing"));
+            #endregion
+
+            return availableActions;
+        }
+
 
         public void DisplayBattleStatus(Character unitInTurn)
         {
@@ -99,5 +122,9 @@
             displayUnitStatuses(Monsters);
             Console.WriteLine("\n=========== ****** ===========\n");
         }
+    }
+    public record class ActionConsoleMenuItem(IAction playerAction, string Description)
+    {
+        public override string ToString() => Description;
     }
 }

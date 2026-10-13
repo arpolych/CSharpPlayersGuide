@@ -139,6 +139,13 @@ Expansion: Gear
 ***			what is going on and how to do it. As well as how to use classes, abstracts, interfaces
 ***			and so on.
 
+*** 13-Oct: Solution to issue with multiple item choice for players
+***			When it is the player's time to choose an action, it should always be based on an 
+***			ActionMenu the current battle state produces (which is based on the unit, itself, and the 
+***			current action being runned with that unit highlighted).
+***			So: player.ChooseAction => retrieves ActionMenu for player with that unit highlighted
+***			picks an initial action/ActionMenuItem, which is re-send for choosing.
+
 ---------------------------
 Expansion: Stolen Inventory
 ------------------ 00-Oct -

@@ -9,7 +9,7 @@
     public class DoNothingAction : IAction
     {
         public void Run(Character unit, Battle battle)
-            => Console.WriteLine($"{unit.Name} did NOTHING.");
+            => Console.WriteLine($" >> {unit.Name} did NOTHING.");
     }
 
     public class AttackAction : IAction
@@ -23,9 +23,9 @@
 
             target.ReceivedDamage(damageAmount);
 
-            Console.WriteLine($"{unit.Name} used {attackType.Name} on {target.Name}.");
-            Console.WriteLine($"{attackType.Name} dealt {damageAmount} to {target.Name}.");
-            Console.WriteLine($"{target.Name} is now at {target.GetHPStatus()}");
+            Console.WriteLine($" >> {unit.Name} used {attackType.Name} on {target.Name}.");
+            Console.WriteLine($" >> {attackType.Name} dealt {damageAmount} to {target.Name}.");
+            Console.WriteLine($" >> {target.Name} is now at {target.GetHPStatus()}.");
 
             if (target.CurrentHP == 0)
             {
@@ -36,61 +36,50 @@
     }
     #endregion
 
-    public abstract class MultipleChoiceAction<T> : IAction where T : IUnitItem
+    public class UseInventoryItemAction<T> : IAction where T : IUnitItem
     {
-        public List<T> Choices { get; } = new();
+        public List<T> InventoryItems { get; }
 
-        public MultipleChoiceAction(List<T> choices) => Choices = choices;
+        public UseInventoryItemAction(List<T> inventoryItems)
+            => InventoryItems = inventoryItems;
 
-        public abstract void Run(Character unit, Battle battle);
-
-        public T ReceivePlayerChoice(Character activatedBy, Battle state, IPlayer player)
+        public virtual void Run(Character playerUnit, Battle gameState)
         {
-            var choiceMenu = from c in Choices
-                             group c by c.Name into nameGroup
-                             select (Name: nameGroup.Key, Value: nameGroup.Count());
-            int choiceNum = 1;
+            // Step 1: Retrieve player's item choice for this inventory...
+            var itemChoice = RetrievePlayerItemChoice(playerUnit, gameState, gameState.GetPlayerFor(playerUnit));
 
-            /*
-             * At some point from the Run function this one is called and the player
-             * depending on his type gets the chance to pick one of the Choices.
-             */
-            foreach (var elem in choiceMenu)
-                Console.WriteLine($"{choiceNum++}. {elem.Name} ({elem.Value})");
-
-            throw new NotImplementedException();
-        }
-    }
-
-    #region - Actions with multiple options when chosen.
-    public class UseConsumableItemAction : MultipleChoiceAction<ConsumableItem>
-    {
-        public UseConsumableItemAction(List<ConsumableItem> itemsToUse) : base(itemsToUse) { }
-
-        public override void Run(Character activatedBy, Battle battleState)
-        {
-            var consumableItemChoice = ReceivePlayerChoice(activatedBy, battleState, battleState.GetPlayerFor(activatedBy));
-            /*
-             * At this stage we assume that all potions are healing ones.
-             * Thus, it will straight-up use the first in the inventory.
-             */
-
-            if (base.Choices.FirstOrDefault() is ConsumableItem itemToUse)
+            // Step 2: Apply the item to the player's unit...
+            // Step 3: Remove the used item from the unit's party inventory...
+            if (itemChoice is T itemToUse)
             {
-                itemToUse?.ApplyEffect(activatedBy, battleState);
-                base.Choices.Remove(itemToUse!);
+                itemToUse?.Apply(playerUnit, gameState);
+                InventoryItems.Remove(itemToUse!);
             }
         }
-    }
 
-    public class EquipGearAction : MultipleChoiceAction<IEquippableGearItem>
-    {
-        public EquipGearAction(List<IEquippableGearItem> availableGear) : base(availableGear) { }
-
-        public override void Run(Character unit, Battle battle)
+        public T? RetrievePlayerItemChoice(Character activatedBy, Battle state, IPlayer player)
         {
-            throw new NotImplementedException();
+            // Step 1: Group the items found in this inventory...
+            var itemGroups = from items in InventoryItems
+                             let categoryKey = (ItemType: items.GetType(), ItemName: items.Name)
+                             group items by categoryKey into itemCategories
+                             select new ItemsGroupInfo(Type: itemCategories.Key.ItemType,
+                                                       Name: itemCategories.Key.ItemName,
+                                                       Quantity: itemCategories.Count());
+
+            // Step 2: Request the player's choice of item group...
+            var itemTypeGroupByPlayer = player.ChooseItemTypeGroup(itemGroups);
+
+            return InventoryItems.Find(item =>
+            {
+                return item.GetType().Equals(itemTypeGroupByPlayer.Type);
+            });
         }
     }
-    #endregion
+
+    public record class ItemsGroupInfo(Type Type, string Name, int Quantity)
+    {
+        public override string ToString()
+            => $"{Name} {((Quantity == 1) ? string.Empty : $"({Quantity})")}";
+    }
 }
