@@ -26,7 +26,8 @@
             var message = $"{playerUnit.Name} has used a healing potion! (+{HealingValue} HP)";
 
             playerUnit.ReceivedHeal(HealingValue);
-            ColoredConsole.WriteLine(message, gameState.GetPlayerFor(playerUnit).Color);
+            gameState.GetPartyFor(playerUnit).ConsumablesInventory.Remove(this);
+            ColoredConsole.WriteLine(message, gameState.GetPlayerFor(playerUnit).PrimaryColor);
         }
     }
     #endregion
@@ -39,14 +40,30 @@
 
         public virtual void Apply(Character playerUnit, Battle gameState)
         {
-            var message = $"{playerUnit.Name} ";
+            // Electra Polychronova found a bug in this method! - 13-Oct... #NewDevs
+            /*
+             * Bug Fix Details
+             * 
+             * >> Inventory swap of items error! #NotImplemented#Forgot#Hahah^^
+             */
+            var message = $" >> {playerUnit.Name} ";
+            var aboutToUnequip = playerUnit.EquippedGear;
+            Party unitParty = gameState.GetPartyFor(playerUnit);
 
-            if (playerUnit.EquippedGear == null)
+            playerUnit.EquippedGear = this;
+            unitParty.UnequippedGear.Remove(this);
+
+            if (aboutToUnequip == null)
+            {
                 message += $"is now equipped with a gear item - {Name}!";
+            }
             else
-                message += $"has had the gear item, {playerUnit.EquippedGear.Name}, swapped with {Name}!";
+            {
+                message += $"has had the gear item, {aboutToUnequip.Name}, swapped with {Name}!";
+                unitParty.UnequippedGear.Add(aboutToUnequip);
+            }
 
-            ColoredConsole.WriteLine(message, gameState.GetPlayerFor(playerUnit).Color);
+            ColoredConsole.WriteLine(message, gameState.GetPlayerFor(playerUnit).PrimaryColor);
         }
     }
 

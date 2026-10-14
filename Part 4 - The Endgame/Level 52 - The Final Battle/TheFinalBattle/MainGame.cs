@@ -24,13 +24,13 @@ static void InitializePlayers(out IPlayer heroesPlayer, out IPlayer monstersPlay
         case 1:
             {
                 heroesPlayer = new HumanPlayer(ConsoleColor.DarkCyan, ConsoleColor.Cyan);
-                monstersPlayer = new ComputerPlayer(ConsoleColor.DarkRed);
+                monstersPlayer = new ComputerPlayer(ConsoleColor.DarkRed, ConsoleColor.Red);
                 break;
             }
         case 2:
             {
-                heroesPlayer = new ComputerPlayer(ConsoleColor.DarkCyan);
-                monstersPlayer = new ComputerPlayer(ConsoleColor.DarkRed);
+                heroesPlayer = new ComputerPlayer(ConsoleColor.DarkCyan, ConsoleColor.Cyan);
+                monstersPlayer = new ComputerPlayer(ConsoleColor.DarkRed, ConsoleColor.Red);
                 break;
             }
         case 3:
@@ -90,7 +90,7 @@ static void InitializeMonsters(IPlayer monstersPlayer, out Party monstersWave1, 
     // Monster Wave 1
     monstersWave1 = new Party(monstersPlayer);
     // Adding units and consumables...
-    monstersWave1.Units.Add(new Skeleton());
+    monstersWave1.Units.Add(new Skeleton() { EquippedGear = new Dagger() });
     monstersWave1.ConsumablesInventory.Add(new HealthPotion());
 
     // Monster Wave 2
@@ -99,6 +99,8 @@ static void InitializeMonsters(IPlayer monstersPlayer, out Party monstersWave1, 
     monstersWave2.Units.Add(new Skeleton());
     monstersWave2.Units.Add(new Skeleton());
     monstersWave2.ConsumablesInventory.Add(new HealthPotion());
+    monstersWave2.UnequippedGear.Add(new Dagger());
+    monstersWave2.UnequippedGear.Add(new Dagger());
 
     // Monster Wave 3
     monstersWave3 = new Party(monstersPlayer);

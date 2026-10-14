@@ -53,7 +53,7 @@
                 foreach (Character unit in p.Units)
                 {
                     DisplayBattleStatus(unit);
-                    ColoredConsole.WriteLine($"It is {unit.Name}'s turn...", GetPlayerFor(unit).Color);
+                    ColoredConsole.WriteLine($"It is {unit.Name}'s turn...", GetPlayerFor(unit).PrimaryColor);
                     p.Player.ChooseAction(unit, this).Run(unit, this);
                     Console.WriteLine();
                 }
@@ -75,24 +75,50 @@
 
         public IPlayer GetPlayerFor(Character unit) => GetPartyFor(unit).Player;
 
-        public IEnumerable<ActionConsoleMenuItem> GetAvailablePlayerActions(Character playerUnit)
+        public IEnumerable<ActionConsoleMenuItem> GetAvailablePlayerConsoleActions(Character playerUnit)
         {
             var availableActions = new List<ActionConsoleMenuItem>();
+            var unitParty = GetPartyFor(playerUnit);
 
-            if (GetPartyFor(playerUnit).ConsumablesInventory is List<ConsumableItem> partyConsumables
+            // Add special attack action...
+            if (playerUnit.EquippedGear != null)
+            {
+                var specialAttackType = playerUnit.EquippedGear.GearAttackType;
+                availableActions.Add(new ActionConsoleMenuItem(
+                                     new AttackAction(specialAttackType),
+                                                      $"Special Attack ({playerUnit.EquippedGear.Name} with {specialAttackType.Name})"));
+            }
+
+            // Adds standard attack action...
+            availableActions.Add(new ActionConsoleMenuItem(
+                     new AttackAction(playerUnit.DefaultAttack),
+                     $"Standard Attack ({playerUnit.DefaultAttack.Name})"));
+
+            // Adds the equip gear action...
+            if (unitParty.UnequippedGear is List<EquippableGearItem> partyGear
+                && partyGear.Count > 0)
+            {
+                var equipGearAction = new UseInventoryItemAction<EquippableGearItem>(partyGear);
+                int gearNum = partyGear.Count;
+                availableActions.Add(
+                    new ActionConsoleMenuItem(equipGearAction,
+                    $"Equip Gear{(gearNum == 1 ? string.Empty : $" ({gearNum})")}"));
+            }
+
+            // Adds the use consumables action...
+            if (unitParty.ConsumablesInventory is List<ConsumableItem> partyConsumables
                 && partyConsumables.Count > 0)
             {
                 var useConsumablesAction = new UseInventoryItemAction<ConsumableItem>(partyConsumables);
                 int consumableNum = partyConsumables.Count;
                 availableActions.Add(
                     new ActionConsoleMenuItem(useConsumablesAction,
-                    $"Use Consumables{(consumableNum == 1 ? "" : $" ({consumableNum})")}"));
+                    $"Use Consumables{(consumableNum == 1 ? string.Empty : $" ({consumableNum})")}"));
             }
 
-            #region - The always available actions for all player units.
-            availableActions.Add(new ActionConsoleMenuItem(new AttackAction(), "Standard Attack"));
-            availableActions.Add(new ActionConsoleMenuItem(new DoNothingAction(), "Do Nothing"));
-            #endregion
+            // Adds the do-nothing action...
+            availableActions.Add(new ActionConsoleMenuItem(
+                                 new DoNothingAction(), "Do Nothing"));
 
             return availableActions;
         }
@@ -105,26 +131,58 @@
                 {
                     foreach (Character unit in p.Units)
                     {
-                        var unitBattleStatus = $"{unit.Name} >> ( {unit.GetHPStatus()} )";
+                        var unitBattleStatus = $"{unit} >> ( {unit.GetHPStatus()} )";
 
-                        if (unit.Equals(unitInTurn)) ColoredConsole.WriteLine(unitBattleStatus, ConsoleColor.Yellow);
+                        if (unit.Equals(unitInTurn))
+                            ColoredConsole.WriteLine(unitBattleStatus, p.Player.SecondaryColor);
                         else Console.WriteLine(unitBattleStatus);
                     }
                 };
 
-            Console.WriteLine("\n======= *** BATTLE *** =======\n");
+            ColoredConsole.WriteLine("\n======= *** BATTLE *** =======\n", ConsoleColor.Gray);
             // Display heroes party
             displayUnitStatuses(Heroes);
 
-            Console.WriteLine("\n===========   VS   ===========\n");
+            ColoredConsole.WriteLine("\n===========   VS   ===========\n", ConsoleColor.Gray);
 
             // Display monster party
             displayUnitStatuses(Monsters);
-            Console.WriteLine("\n=========== ****** ===========\n");
+            ColoredConsole.WriteLine("\n=========== ****** ===========\n", ConsoleColor.Gray);
         }
     }
+
     public record class ActionConsoleMenuItem(IAction playerAction, string Description)
     {
         public override string ToString() => Description;
+
+        public static List<T> FindAllTypeMatchedActions<T>(
+            IEnumerable<ActionConsoleMenuItem> collection) where T : IAction
+        {
+            var matchedActions = new List<T>();
+
+            foreach (ActionConsoleMenuItem actionMenuItem in collection)
+            {
+                if (actionMenuItem.playerAction is T matchedAction)
+                {
+                    matchedActions.Add(matchedAction);
+                }
+            }
+
+            return matchedActions;
+        }
+
+        public static T FindFirstTypeMatchedAction<T>(
+            IEnumerable<ActionConsoleMenuItem> collection) where T : IAction
+        {
+            foreach (ActionConsoleMenuItem actionMenuItem in collection)
+            {
+                if (actionMenuItem.playerAction is T matchedAction)
+                {
+                    return matchedAction;
+                }
+            }
+
+            throw new Exception("This action type hasn't been found!");
+        }
     }
 }

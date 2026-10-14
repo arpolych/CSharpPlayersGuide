@@ -14,24 +14,40 @@
 
     public class AttackAction : IAction
     {
+        public IAttackType AttackType { get; }
+        private AttackData _attackData;
+
+        public AttackAction(IAttackType attackType)
+        {
+            AttackType = attackType;
+            _attackData = attackType.GenerateAttackData();
+        }
+
         public void Run(Character unit, Battle battle)
         {
-            var attackType = unit.DefaultAttack;
             var target = battle.GetEnemyPartyFor(unit).Units[0];
-            var attackData = attackType.GenerateAttackData();
-            int damageAmount = attackData.Damage;
+            int damageAmount = _attackData.Damage;
 
             target.ReceivedDamage(damageAmount);
-
-            Console.WriteLine($" >> {unit.Name} used {attackType.Name} on {target.Name}.");
-            Console.WriteLine($" >> {attackType.Name} dealt {damageAmount} to {target.Name}.");
+            Console.WriteLine($" >> {unit.Name} used {AttackType.Name} on {target.Name}.");
+            Console.WriteLine($" >> {AttackType.Name} dealt {damageAmount} to {target.Name}.");
             Console.WriteLine($" >> {target.Name} is now at {target.GetHPStatus()}.");
 
             if (target.CurrentHP == 0)
             {
-                Console.WriteLine($"{target.Name} has been defeated!");
+                ColoredConsole.WriteLine($" >> {target.Name} has been defeated!", ConsoleColor.DarkYellow);
                 battle.GetPartyFor(target).Units.Remove(target);
             }
+        }
+
+        public static AttackAction RetrieveAttackActionWithType<T>(List<AttackAction> attackActions) where T : IAttackType
+        {
+            foreach (var attackAction in attackActions)
+            {
+                if (attackAction.AttackType is T) return attackAction;
+            }
+
+            throw new Exception("This attack doesn't exist yet!");
         }
     }
     #endregion
@@ -53,17 +69,16 @@
             if (itemChoice is T itemToUse)
             {
                 itemToUse?.Apply(playerUnit, gameState);
-                InventoryItems.Remove(itemToUse!);
             }
         }
 
-        public T? RetrievePlayerItemChoice(Character activatedBy, Battle state, IPlayer player)
+        public T? RetrievePlayerItemChoice(Character playerUnit, Battle gameState, IPlayer player)
         {
             // Step 1: Group the items found in this inventory...
             var itemGroups = from items in InventoryItems
                              let categoryKey = (ItemType: items.GetType(), ItemName: items.Name)
                              group items by categoryKey into itemCategories
-                             select new ItemsGroupInfo(Type: itemCategories.Key.ItemType,
+                             select new ItemGroupTypeInfo(Type: itemCategories.Key.ItemType,
                                                        Name: itemCategories.Key.ItemName,
                                                        Quantity: itemCategories.Count());
 
@@ -77,7 +92,7 @@
         }
     }
 
-    public record class ItemsGroupInfo(Type Type, string Name, int Quantity)
+    public record class ItemGroupTypeInfo(Type Type, string Name, int Quantity)
     {
         public override string ToString()
             => $"{Name} {((Quantity == 1) ? string.Empty : $"({Quantity})")}";

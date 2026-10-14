@@ -2,15 +2,17 @@
 {
     public interface IPlayer
     {
-        ConsoleColor Color { get; }
+        ConsoleColor PrimaryColor { get; }
+        ConsoleColor SecondaryColor { get; }
         IAction ChooseAction(Character playerUnit, Battle gameState);
-        ItemsGroupInfo ChooseItemTypeGroup(IEnumerable<ItemsGroupInfo> itemTypeGroups);
+        ItemGroupTypeInfo ChooseItemTypeGroup(IEnumerable<ItemGroupTypeInfo> itemTypeGroups);
     }
 
     public abstract class Player : IPlayer
     {
-        protected readonly Random _random = new();
-        public ConsoleColor Color { get; protected set; }
+        protected readonly Random _random = new(0);
+        public ConsoleColor PrimaryColor { get; protected set; }
+        public ConsoleColor SecondaryColor { get; protected set; }
 
         protected readonly static ConsoleColor[,] GameColors = {
             // Light Colors - first array
@@ -20,18 +22,22 @@
 
         public Player() => AssignRandomColor();
 
-        public Player(ConsoleColor playerColor) => Color = playerColor;
+        public Player(ConsoleColor primaryColor, ConsoleColor secondaryColor)
+        {
+            PrimaryColor = primaryColor;
+            SecondaryColor = secondaryColor;
+        }
 
         public abstract IAction ChooseAction(Character playerUnit, Battle gameState);
 
-        public abstract ItemsGroupInfo ChooseItemTypeGroup(IEnumerable<ItemsGroupInfo> itemTypeGroups);
+        public abstract ItemGroupTypeInfo ChooseItemTypeGroup(IEnumerable<ItemGroupTypeInfo> itemTypeGroups);
 
-        protected virtual void AssignRandomColor()
+        protected void AssignRandomColor()
         {
-            int index1 = _random.Next(GameColors.GetLength(0)),
-                index2 = _random.Next(GameColors.GetLength(1));
+            int index = _random.Next(GameColors.GetLength(1));
 
-            Color = GameColors[index1, index2];
+            PrimaryColor = GameColors[0, index];
+            SecondaryColor = GameColors[1, index];
         }
     }
 
@@ -40,67 +46,142 @@
         public ComputerPlayer()
             : base() { }
 
-        public ComputerPlayer(ConsoleColor playerColor)
-            : base(playerColor) { }
+        public ComputerPlayer(ConsoleColor primaryColor, ConsoleColor secondaryColor)
+            : base(primaryColor, secondaryColor) { }
 
-        public override IAction ChooseAction(Character unit, Battle currentState)
+        public override IAction ChooseAction(Character playerUnit, Battle gameState)
         {
-            Thread.Sleep(850); // - Thinking...
+            // Step 1: Retrieve available player actions and prep essentials...
+            var availableActions = gameState.GetAvailablePlayerConsoleActions(playerUnit);
+            var unitParty = gameState.GetPartyFor(playerUnit);
+            var roll = _random.Next(101);
+            int chanceStacks = 0;
+
+            Thread.Sleep(1_000); // Small delay prior to decision making...
 
             /*
-             * Action choice chances:
-             * 
-             * 1. Standard Attack: 95% (gets affected by increase in
-             *    consumable increase chance.
-             * 2. Do Nothing: 5%
-             * 3. Use consumables: (0% or 25%) (when conditions apply)
-             *    Condition 1: party has a consumable in inventory.
-             *    Condition 2: unit's HP is below half.
+             * Step 2 & 3: Evaluate each action's chance and return it...
              */
-            var currentRandomChance = _random.Next(101); // [0 - 100] values.
-            var unitItems = currentState.GetPartyFor(unit).ConsumablesInventory;
-            int useConsumablesChance = CalculateConsumableActionChance(),
-                useStandardAttackChance = 95 - useConsumablesChance,
-                doNothingChance = 5;
-
-            if (currentRandomChance <= doNothingChance)
-                return new DoNothingAction();
-            else if (currentRandomChance <= (doNothingChance + useStandardAttackChance))
-                return new AttackAction();
-            else return new UseInventoryItemAction<ConsumableItem>(unitItems);
-
-            int CalculateConsumableActionChance()
+            // Priority action #1: Equip Gear
+            int equipChance = GetEquipGearActionChance(playerUnit, unitParty);
+            // [1 - 50] or not happening
+            if ((chanceStacks < roll) && (roll <= equipChance))
             {
-                /*
-                 *    Condition 1: party has a consumable in inventory.
-                 *    Condition 2: unit's HP is below half.
-                 */
-                var flag1 = unitItems.Count > 0;
-                var flag2 = unit.CurrentHP < (unit.MaxHP / 2);
+                return ActionConsoleMenuItem.FindFirstTypeMatchedAction
+                    <UseInventoryItemAction<EquippableGearItem>>(availableActions);
+            }
+            chanceStacks += equipChance;
 
-                return (flag1 && flag2) ? 25 : 0;
+            // Priority action #2: Use Consumables
+            int consumablesChance = GetConsumablesActionChance(playerUnit, unitParty.ConsumablesInventory.Count);
+            // [51 - 75] or [1 - 25]
+            if ((chanceStacks < roll) && (roll <= chanceStacks + consumablesChance))
+            {
+                return ActionConsoleMenuItem.FindFirstTypeMatchedAction
+                    <UseInventoryItemAction<ConsumableItem>>(availableActions);
+            }
+            chanceStacks += consumablesChance;
+
+            // Priority action #3: Do Nothing
+            int doNothingChance = GetDoNothingActionChance(playerUnit);
+            // [76 - 85] or [26 - 35] or [1 - 10]
+            if ((chanceStacks < roll) && (roll <= chanceStacks + doNothingChance))
+            {
+                return ActionConsoleMenuItem.FindFirstTypeMatchedAction
+                    <DoNothingAction>(availableActions);
+            }
+
+            // Priority action #4: Attack (playerUnit might have 2 ways of attacking)
+            // >> If roll didn't follow any previous flow path, then it is surely an attack action.
+            int specialAttakChance = 0,
+                standardAttackChance = 100;
+
+            unsafe
+            {
+                CalcAttackActionChance(playerUnit, &specialAttakChance, &standardAttackChance);
+            }
+
+            List<AttackAction> availableAttackActions = ActionConsoleMenuItem.FindAllTypeMatchedActions<AttackAction>(availableActions);
+            roll = _random.Next(101); // re-roll for attack type decision...
+
+            if ((0 < roll) && (roll <= specialAttakChance))
+            {
+                return AttackAction.RetrieveAttackActionWithType
+                    <SpecialAttackType>(availableAttackActions);
+            }
+            else if ((specialAttakChance < roll) && (roll <= 100))
+            {
+                return AttackAction.RetrieveAttackActionWithType
+                    <StandardAttackType>(availableAttackActions);
+            }
+            else
+            {
+                throw new NotImplementedException("This attack type doesn't exist yet!");
             }
         }
 
-        public override ItemsGroupInfo ChooseItemTypeGroup(IEnumerable<ItemsGroupInfo> itemTypeGroups)
+        private unsafe void CalcAttackActionChance
+            (Character playerUnit, int* pSpecialAttackChance, int* pStandardAttackChance)
         {
-            throw new NotImplementedException();
+            if (playerUnit.EquippedGear != null) *pSpecialAttackChance = 80;
+            else *pSpecialAttackChance = 0;
+
+            *pStandardAttackChance = 100 - *pSpecialAttackChance;
+        }
+
+        private int GetDoNothingActionChance(Character playerUnit)
+        {
+            /*
+             * Mine idea: the more HP a unit is missing the more chance it got to do
+             * nothing in the fight. That chance is capped at 10% of the time.
+             */
+            return _random.Next(playerUnit.MaxHP - playerUnit.CurrentHP) % 10;
+        }
+
+        private int GetConsumablesActionChance(Character playerUnit, int consumableNum)
+        {
+            /*
+             *    Condition 1: party has a consumable in inventory.
+             *    Condition 2: unit's HP is below half.
+             */
+            var flag1 = consumableNum > 0;
+            var flag2 = playerUnit.CurrentHP < (playerUnit.MaxHP / 2);
+
+            return (flag1 && flag2) ? 25 : 0;
+        }
+
+        private int GetEquipGearActionChance(Character playerUnit, Party unitParty)
+        {
+            /*
+             * Condition 1: playerUnit hasn't any gear equipped.
+             * Condition 2: unitParty has available gear.
+             */
+            bool flag1 = playerUnit.EquippedGear == null,
+                 flag2 = unitParty.UnequippedGear.Count > 0;
+
+            return (flag1 && flag2) ? 50 : 0;
+        }
+
+        public override ItemGroupTypeInfo ChooseItemTypeGroup(IEnumerable<ItemGroupTypeInfo> itemTypeGroups)
+        {
+            var array = itemTypeGroups.ToArray();
+            var itemGroupTypeChoice = array[_random.Next(array.Length)];
+
+            return itemGroupTypeChoice;
         }
     }
 
     public class HumanPlayer : Player
     {
-        public ConsoleColor InputColor { get; protected set; }
-
         public HumanPlayer()
-            : base() => AssignRandomColor();
+            : base() { }
 
-        public HumanPlayer(ConsoleColor playerColor, ConsoleColor playerInputColor)
-            : base(playerColor) => InputColor = playerInputColor;
+        public HumanPlayer(ConsoleColor primaryColor, ConsoleColor secondaryColor)
+            : base(primaryColor, secondaryColor) { }
 
         public override IAction ChooseAction(Character playerUnit, Battle gameState)
         {
-            var availableActions = gameState.GetAvailablePlayerActions(playerUnit);
+            var availableActions = gameState.GetAvailablePlayerConsoleActions(playerUnit);
             var consoleMenu = new ConsoleMenu<ActionConsoleMenuItem>(availableActions);
 
             return ChooseFromConsoleMenu(consoleMenu).playerAction;
@@ -126,40 +207,18 @@
             while (true);
         }
 
-        public override ItemsGroupInfo ChooseItemTypeGroup(IEnumerable<ItemsGroupInfo> itemTypeGroups)
+        public override ItemGroupTypeInfo ChooseItemTypeGroup(IEnumerable<ItemGroupTypeInfo> itemTypeGroups)
         {
-            var consoleMenu = new ConsoleMenu<ItemsGroupInfo>(itemTypeGroups);
-            Console.WriteLine(consoleMenu);
+            var consoleMenu = new ConsoleMenu<ItemGroupTypeInfo>(itemTypeGroups);
 
-            do
-            {
-                try
-                {
-                    string playerInput = GetConsoleInput("Which item do you want? ");
-
-                    return consoleMenu.RetrieveElement(Convert.ToInt32(playerInput));
-                }
-                catch (Exception)
-                {
-                    continue;
-                }
-            }
-            while (true);
+            return ChooseFromConsoleMenu(consoleMenu, "What item to use? ");
         }
 
         public string GetConsoleInput(string userMessage)
         {
-            ColoredConsole.Write(userMessage, Color);
+            ColoredConsole.Write(userMessage, PrimaryColor);
 
-            return ColoredConsole.ReadLine(InputColor);
-        }
-
-        protected override void AssignRandomColor()
-        {
-            int index = _random.Next(GameColors.GetLength(1));
-
-            Color = GameColors[0, index];
-            InputColor = GameColors[1, index];
+            return ColoredConsole.ReadLine(SecondaryColor);
         }
     }
 

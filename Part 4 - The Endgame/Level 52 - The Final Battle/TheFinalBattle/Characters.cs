@@ -21,6 +21,9 @@
         }
 
         public string GetHPStatus() => $"{CurrentHP}/{MaxHP}";
+
+        public override string ToString()
+            => $"{Name} {(EquippedGear != null ? $"[{EquippedGear.Name}]" : string.Empty)}";
     }
 
     public class Skeleton : Character
