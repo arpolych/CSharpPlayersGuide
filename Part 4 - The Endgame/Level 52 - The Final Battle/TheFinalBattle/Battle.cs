@@ -2,6 +2,7 @@
 {
     public class Battle
     {
+        public static Random Randomness { get; } = new Random();
         public Party Heroes { get; }
         public Party Monsters { get; private set; }
         public Party[] MonsterWaves { get; }
@@ -59,6 +60,13 @@
                 }
             }
             #endregion
+        }
+
+        public string GetBattlePartyName(Party party)
+        {
+            if (party == Heroes) return "Heroes";
+            else if (party == Monsters) return "Monsters";
+            else throw new Exception("Can't match this party to retrieve a name!");
         }
 
         public Party GetPartyFor(Character unit)

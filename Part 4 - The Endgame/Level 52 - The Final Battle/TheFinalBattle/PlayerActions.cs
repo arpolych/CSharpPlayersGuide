@@ -9,7 +9,7 @@
     public class DoNothingAction : IAction
     {
         public void Run(Character unit, Battle battle)
-            => Console.WriteLine($" >> {unit.Name} did NOTHING.");
+            => ColoredConsole.WriteLine($" >> {unit.Name} did NOTHING.", ConsoleColor.Magenta);
     }
 
     public class AttackAction : IAction
@@ -23,20 +23,59 @@
             _attackData = attackType.GenerateAttackData();
         }
 
-        public void Run(Character unit, Battle battle)
+        public void Run(Character playerUnit, Battle gameState)
         {
-            var target = battle.GetEnemyPartyFor(unit).Units[0];
+            var unitParty = gameState.GetPartyFor(playerUnit);
+
+            if (_attackData.HasMissedTarget())
+            {
+                ColoredConsole.WriteLine($" >> {playerUnit.Name} used {AttackType.Name} and MISSED!", ConsoleColor.Magenta);
+                return;
+            }
+
+            var enemyParty = gameState.GetEnemyPartyFor(playerUnit);
+            var target = enemyParty.Units[0];
             int damageAmount = _attackData.Damage;
 
             target.ReceivedDamage(damageAmount);
-            Console.WriteLine($" >> {unit.Name} used {AttackType.Name} on {target.Name}.");
-            Console.WriteLine($" >> {AttackType.Name} dealt {damageAmount} to {target.Name}.");
-            Console.WriteLine($" >> {target.Name} is now at {target.GetHPStatus()}.");
+            ColoredConsole.WriteLine($" >> {playerUnit.Name} used {AttackType.Name} on {target.Name}.", ConsoleColor.Magenta);
+            Console.WriteLine($"   >> {AttackType.Name} dealt {damageAmount} to {target.Name}.");
+            Console.WriteLine($"   >> {target.Name} is now at {target.GetHPStatus()} HP.");
 
             if (target.CurrentHP == 0)
             {
-                ColoredConsole.WriteLine($" >> {target.Name} has been defeated!", ConsoleColor.DarkYellow);
-                battle.GetPartyFor(target).Units.Remove(target);
+                ColoredConsole.WriteLine($"   >> {target.Name} has been defeated!", unitParty.Player.PrimaryColor);
+
+                var acquiredGear = target.TransferGear(unitParty.UnequippedGear);
+                enemyParty.Units.Remove(target);
+
+                if (acquiredGear != null)
+                {
+                    Console.WriteLine($"   >> {target.Name}'s gear ({acquiredGear.Name}) was acquired!");
+                }
+
+                if (enemyParty.Units.Count == 0)
+                {
+                    var unitPartyName = gameState.GetBattlePartyName(unitParty);
+                    var enemyPartyName = gameState.GetBattlePartyName(enemyParty);
+
+                    bool lootedGear = enemyParty.TransferGearItems(unitParty.UnequippedGear,
+                        $"   >> The {enemyPartyName}'s party gear is gone!");
+                    bool lootedConsumables = enemyParty.TransferConsumables(unitParty.ConsumablesInventory,
+                        $"   >> The {enemyPartyName}'s party consumables are gone!");
+
+                    var message = string.Empty;
+                    if (!lootedGear && !lootedConsumables)
+                        message = $" >> The {unitPartyName} party had nothing to loot from enemy's inventory!";
+                    else if (!lootedGear && lootedConsumables)
+                        message = $" >> The {unitPartyName} party looted all the consumables!";
+                    else if (lootedGear && !lootedConsumables)
+                        message = $" >> The {unitPartyName} party looted all the gear!";
+                    else
+                        message = $" >> The {unitPartyName} party looted everything!";
+
+                    ColoredConsole.WriteLine(message, ConsoleColor.Magenta);
+                }
             }
         }
 

@@ -23,11 +23,11 @@
 
         public override void Apply(Character playerUnit, Battle gameState)
         {
-            var message = $"{playerUnit.Name} has used a healing potion! (+{HealingValue} HP)";
+            var message = $" >> {playerUnit.Name} has used a healing potion! (+{HealingValue} HP)";
 
             playerUnit.ReceivedHeal(HealingValue);
             gameState.GetPartyFor(playerUnit).ConsumablesInventory.Remove(this);
-            ColoredConsole.WriteLine(message, gameState.GetPlayerFor(playerUnit).PrimaryColor);
+            ColoredConsole.WriteLine(message, ConsoleColor.Magenta);
         }
     }
     #endregion
@@ -63,7 +63,7 @@
                 unitParty.UnequippedGear.Add(aboutToUnequip);
             }
 
-            ColoredConsole.WriteLine(message, gameState.GetPlayerFor(playerUnit).PrimaryColor);
+            ColoredConsole.WriteLine(message, ConsoleColor.Magenta);
         }
     }
 
@@ -79,6 +79,13 @@
         public override string Name => "DAGGER";
 
         public override SpecialAttackType GearAttackType { get; } = new StabAttackType();
+    }
+
+    public class VinsBow : EquippableGearItem
+    {
+        public override string Name => $"VIN'S BOW";
+
+        public override SpecialAttackType GearAttackType { get; } = new QuickShotAttackType();
     }
     #endregion
 }

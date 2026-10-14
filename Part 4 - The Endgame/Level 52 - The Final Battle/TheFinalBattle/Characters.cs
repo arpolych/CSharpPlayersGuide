@@ -24,6 +24,21 @@
 
         public override string ToString()
             => $"{Name} {(EquippedGear != null ? $"[{EquippedGear.Name}]" : string.Empty)}";
+
+        public EquippableGearItem? TransferGear(List<EquippableGearItem> to)
+        {
+            if (EquippedGear != null)
+            {
+                var acquiredGear = EquippedGear;
+
+                to.Add(EquippedGear);
+                EquippedGear = null;
+
+                return acquiredGear;
+            }
+
+            return null;
+        }
     }
 
     public class Skeleton : Character
@@ -62,6 +77,20 @@
         {
             base.MaxHP = 15;
             base.CurrentHP = base.MaxHP;
+        }
+    }
+
+    public class VinFletcher : Character
+    {
+        public override string Name => "VIN FLETCHER";
+
+        public override StandardAttackType DefaultAttack => new Punch();
+
+        public VinFletcher()
+        {
+            base.MaxHP = 15;
+            base.CurrentHP = base.MaxHP;
+            EquippedGear = new VinsBow();
         }
     }
 }

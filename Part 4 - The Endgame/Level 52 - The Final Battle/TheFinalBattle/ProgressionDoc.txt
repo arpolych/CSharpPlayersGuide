@@ -147,14 +147,23 @@ Expansion: Gear
 ***			picks an initial action/ActionMenuItem, which is re-send for choosing.
 
 *** 14-Oct: Fix chances and PC gameplay with Gear & Consumables...
+***	  >> [14:39]: All has been fixed!
 
 ---------------------------
 Expansion: Stolen Inventory
------------------- 00-Oct -
+------------------ 14-Oct -
+[X] When a unit dies, transfer its equipped gear to the enemy party's gear 
+	inventory.
+[X] When all party units die, transfer all its unequipped and unused consumables
+	to the enemy party's corresponding inventories.
+*** 14-Oct: Add the acquisition console text. [DONE]
 
 -----------------------
 Expansion: Vin Fletcher
--------------- 00-Oct -
+-------------- 14-Oct -
+[X] AttackData now includes a MissChance property used for attack success probability.
+[X] Display playerUnit missed attack message.
+[X] Add Vin Fletcher according to the details mentioned.
 
 ---------------------------
 Expansion: Attack Modifiers

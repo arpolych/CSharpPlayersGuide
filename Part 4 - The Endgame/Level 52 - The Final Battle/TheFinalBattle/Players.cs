@@ -10,7 +10,6 @@
 
     public abstract class Player : IPlayer
     {
-        protected readonly Random _random = new(0);
         public ConsoleColor PrimaryColor { get; protected set; }
         public ConsoleColor SecondaryColor { get; protected set; }
 
@@ -34,7 +33,7 @@
 
         protected void AssignRandomColor()
         {
-            int index = _random.Next(GameColors.GetLength(1));
+            int index = Battle.Randomness.Next(GameColors.GetLength(1));
 
             PrimaryColor = GameColors[0, index];
             SecondaryColor = GameColors[1, index];
@@ -54,7 +53,7 @@
             // Step 1: Retrieve available player actions and prep essentials...
             var availableActions = gameState.GetAvailablePlayerConsoleActions(playerUnit);
             var unitParty = gameState.GetPartyFor(playerUnit);
-            var roll = _random.Next(101);
+            var roll = Battle.Randomness.Next(100); // [0 - 99] values...
             int chanceStacks = 0;
 
             Thread.Sleep(1_000); // Small delay prior to decision making...
@@ -64,28 +63,28 @@
              */
             // Priority action #1: Equip Gear
             int equipChance = GetEquipGearActionChance(playerUnit, unitParty);
-            // [1 - 50] or not happening
-            if ((chanceStacks < roll) && (roll <= equipChance))
+            // [0 - 49] or not happening
+            if ((chanceStacks <= roll) && (roll < equipChance))
             {
                 return ActionConsoleMenuItem.FindFirstTypeMatchedAction
                     <UseInventoryItemAction<EquippableGearItem>>(availableActions);
             }
-            chanceStacks += equipChance;
+            else chanceStacks += equipChance;
 
             // Priority action #2: Use Consumables
             int consumablesChance = GetConsumablesActionChance(playerUnit, unitParty.ConsumablesInventory.Count);
-            // [51 - 75] or [1 - 25]
-            if ((chanceStacks < roll) && (roll <= chanceStacks + consumablesChance))
+            // [50 - 74] or [0 - 24]
+            if ((chanceStacks <= roll) && (roll < chanceStacks + consumablesChance))
             {
                 return ActionConsoleMenuItem.FindFirstTypeMatchedAction
                     <UseInventoryItemAction<ConsumableItem>>(availableActions);
             }
-            chanceStacks += consumablesChance;
+            else chanceStacks += consumablesChance;
 
             // Priority action #3: Do Nothing
             int doNothingChance = GetDoNothingActionChance(playerUnit);
-            // [76 - 85] or [26 - 35] or [1 - 10]
-            if ((chanceStacks < roll) && (roll <= chanceStacks + doNothingChance))
+            // [75 - 84] or [25 - 34] or [0 - 9]
+            if ((chanceStacks <= roll) && (roll < chanceStacks + doNothingChance))
             {
                 return ActionConsoleMenuItem.FindFirstTypeMatchedAction
                     <DoNothingAction>(availableActions);
@@ -102,14 +101,14 @@
             }
 
             List<AttackAction> availableAttackActions = ActionConsoleMenuItem.FindAllTypeMatchedActions<AttackAction>(availableActions);
-            roll = _random.Next(101); // re-roll for attack type decision...
+            roll = Battle.Randomness.Next(100); // [0 - 99] re-roll for attack type decision...
 
-            if ((0 < roll) && (roll <= specialAttakChance))
+            if ((0 <= roll) && (roll < specialAttakChance))
             {
                 return AttackAction.RetrieveAttackActionWithType
                     <SpecialAttackType>(availableAttackActions);
             }
-            else if ((specialAttakChance < roll) && (roll <= 100))
+            else if ((specialAttakChance <= roll) && (roll < 100))
             {
                 return AttackAction.RetrieveAttackActionWithType
                     <StandardAttackType>(availableAttackActions);
@@ -123,10 +122,12 @@
         private unsafe void CalcAttackActionChance
             (Character playerUnit, int* pSpecialAttackChance, int* pStandardAttackChance)
         {
-            if (playerUnit.EquippedGear != null) *pSpecialAttackChance = 80;
-            else *pSpecialAttackChance = 0;
+            if (playerUnit.EquippedGear != null)
+                *pSpecialAttackChance = (60 + Battle.Randomness.Next(21)); // [60 - 80] values...
+            else
+                *pSpecialAttackChance = 0;
 
-            *pStandardAttackChance = 100 - *pSpecialAttackChance;
+            *pStandardAttackChance = 100 - *pSpecialAttackChance; // 100 or [40 - 20] values...
         }
 
         private int GetDoNothingActionChance(Character playerUnit)
@@ -135,7 +136,7 @@
              * Mine idea: the more HP a unit is missing the more chance it got to do
              * nothing in the fight. That chance is capped at 10% of the time.
              */
-            return _random.Next(playerUnit.MaxHP - playerUnit.CurrentHP) % 10;
+            return Battle.Randomness.Next(playerUnit.MaxHP - playerUnit.CurrentHP) % 10;
         }
 
         private int GetConsumablesActionChance(Character playerUnit, int consumableNum)
@@ -165,7 +166,7 @@
         public override ItemGroupTypeInfo ChooseItemTypeGroup(IEnumerable<ItemGroupTypeInfo> itemTypeGroups)
         {
             var array = itemTypeGroups.ToArray();
-            var itemGroupTypeChoice = array[_random.Next(array.Length)];
+            var itemGroupTypeChoice = array[Battle.Randomness.Next(array.Length)];
 
             return itemGroupTypeChoice;
         }

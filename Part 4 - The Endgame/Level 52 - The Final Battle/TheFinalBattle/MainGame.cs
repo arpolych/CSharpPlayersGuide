@@ -78,6 +78,7 @@ static void InitializeHeroes(IPlayer heroesPlayer, out Party heroes)
     heroes = new Party(heroesPlayer);
     // Adding units...
     heroes.Units.Add(new TrueProgrammer(AskTrueProgrammerName()));
+    heroes.Units.Add(new VinFletcher());
 
     // Adding consumable items...
     heroes.ConsumablesInventory.Add(new HealthPotion());
