@@ -6,7 +6,7 @@
         public Party Heroes { get; }
         public Party Monsters { get; private set; }
         public Party[] MonsterWaves { get; }
-        private bool IsNextWaveAvailable => _currentWaveIndex < MonsterWaves.Length;
+        private bool HasNextWaveAvailable => _currentWaveIndex < MonsterWaves.Length;
         private int _currentWaveIndex = 0;
 
         public Battle(Party heroes, params Party[] monsterWaves)
@@ -16,48 +16,82 @@
             Monsters = MonsterWaves[_currentWaveIndex];
         }
 
+        public void Run(int waveIndex)
+        {
+            _currentWaveIndex = waveIndex;
+            Monsters = MonsterWaves[waveIndex];
+            Run();
+        }
+
         public void Run()
         {
+            bool gameOver = false;
+            (Party Name, Func<bool> WinningCondition) playingParty
+                = (Name: Heroes, WinningCondition: HeroesWinningCondition);
+
             do
             {
-                TraversePartyUnits(Heroes);
+                TraversePartyUnits(playingParty.Name, playingParty.WinningCondition);
 
-                if (Monsters.Units.Count == 0)
-                {
-                    _currentWaveIndex++;
-
-                    if (IsNextWaveAvailable)
-                    {
-                        ColoredConsole.WriteLine("The heroes won this monster wave!", ConsoleColor.Green);
-                        Monsters = MonsterWaves[_currentWaveIndex];
-                        continue;
-                    }
-                    else
-                    {
-                        ColoredConsole.WriteLine("The heroes won, and the Uncoded One was defeated!", ConsoleColor.Green);
-                        return;
-                    }
-                }
-
-                TraversePartyUnits(Monsters);
-
-                if (Heroes.Units.Count == 0)
-                {
-                    ColoredConsole.WriteLine("The heroes lost and the Uncoded One's forces have prevailed!", ConsoleColor.Red);
-                    return;
-                }
+                if (!gameOver) NextPlayingParty();
+                else return;
             } while (true);
 
-            #region - Helper method in traversing units of each party
-            void TraversePartyUnits(Party p)
+            #region - Helper methods in cycling units, parties, as well as the winning conditions...
+            void TraversePartyUnits(Party p, Func<bool> winningCondition)
             {
                 foreach (Character unit in p.Units)
                 {
                     DisplayBattleStatus(unit);
+
                     ColoredConsole.WriteLine($"It is {unit.Name}'s turn...", GetPlayerFor(unit).PrimaryColor);
                     p.Player.ChooseAction(unit, this).Run(unit, this);
+                    gameOver = winningCondition.Invoke();
+
                     Console.WriteLine();
                 }
+            }
+
+            void NextPlayingParty()
+            {
+                var currentParty = playingParty.Name;
+
+                if (currentParty == Heroes) playingParty = (Monsters, MonstersWinningCondition);
+                else if (currentParty == Monsters) playingParty = (Heroes, HeroesWinningCondition);
+                else throw new Exception("Unable to retrieve next playing party!");
+            }
+
+            bool HeroesWinningCondition()
+            {
+                if (Monsters.Units.Count == 0)
+                {
+                    _currentWaveIndex++;
+
+                    if (HasNextWaveAvailable)
+                    {
+                        ColoredConsole.WriteLine("The heroes won this monster wave!", ConsoleColor.Green);
+                        Monsters = MonsterWaves[_currentWaveIndex];
+                        return false;
+                    }
+                    else
+                    {
+                        ColoredConsole.WriteLine("The heroes won, and the Uncoded One was defeated!", ConsoleColor.Green);
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+
+            bool MonstersWinningCondition()
+            {
+                if (Heroes.Units.Count == 0)
+                {
+                    ColoredConsole.WriteLine("The heroes lost and the Uncoded One's forces have prevailed!", ConsoleColor.Red);
+                    return true;
+                }
+
+                return false;
             }
             #endregion
         }

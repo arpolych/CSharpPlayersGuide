@@ -15,7 +15,7 @@
     public class AttackAction : IAction
     {
         public IAttackType AttackType { get; }
-        private AttackData _attackData;
+        private readonly AttackData _attackData;
 
         public AttackAction(IAttackType attackType)
         {
@@ -35,11 +35,10 @@
 
             var enemyParty = gameState.GetEnemyPartyFor(playerUnit);
             var target = enemyParty.Units[0];
-            int damageAmount = _attackData.Damage;
-
-            target.ReceivedDamage(damageAmount);
             ColoredConsole.WriteLine($" >> {playerUnit.Name} used {AttackType.Name} on {target.Name}.", ConsoleColor.Magenta);
-            Console.WriteLine($"   >> {AttackType.Name} dealt {damageAmount} to {target.Name}.");
+
+            int targetDamageReceived = target.WasAttacked(_attackData);
+            Console.WriteLine($"   >> {AttackType.Name} dealt {targetDamageReceived} to {target.Name}.");
             Console.WriteLine($"   >> {target.Name} is now at {target.GetHPStatus()} HP.");
 
             if (target.CurrentHP == 0)

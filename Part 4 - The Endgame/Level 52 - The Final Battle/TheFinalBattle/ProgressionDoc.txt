@@ -167,16 +167,29 @@ Expansion: Vin Fletcher
 
 ---------------------------
 Expansion: Attack Modifiers
------------------- 00-Oct -
+------------------ 15-Oct -
+[X] Create "Attack Modifiers" as a character attribute. These modifiers receive AttackData and alter 
+	it. Attack modifiers have a name.
+[X] All characters should be able to have a defensive attack modifier.
+[X] Adjust damage dealt to untis, by considering their defensive attack modifiers. Display text of 
+	any adjustments occured.
+[X] Create new character "Stone Amarok" with the mentioned details.
+[X] Add a fight against two stone amaroks.
 
------------------------
-Expansion: Damage Types
--------------- 00-Oct -
+*** 15-Oct: Error occurs when one unit wins over the enemy party and then his ally's turn comes.
+***			Solution: the checks about round wins, should happen after each playerUnit turn...
+***		
 
---------------------------
-Expansion: Making it Yours
------------------ 00-Oct -
+---------------------------------------------------------------
+Expansion: Damage Types || Making it Yours || Restoring Balance
+------------------------------------------------------ 15-Oct -
+[X] Create enumaration of damage types. It was recommended as an enum, perhaps because of using just 
+	the name of the damage type and not anything more.
+	- You should have the values of "NORMAL" and "DECODING".
+[X] Attack data include a DamageType, when generating attack data - with the detail that the Uncoded
+	One's being the "DECODING".
+[X] "True Programmer" will have a Defensive Attack Modifier called "Object Sight" that reduces 
+[X] Increase "Unraveling" max damage to 4.
 
-----------------------------
-Expansion: Restoring Balance
-------------------- 00-Oct -
+***	15-Oct: Fixed cycling method with partyies and winning condition order...
+***		

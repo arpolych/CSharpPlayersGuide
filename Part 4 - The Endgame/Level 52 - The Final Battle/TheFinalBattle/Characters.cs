@@ -7,6 +7,13 @@
         public int MaxHP { get; protected set; }
         public int CurrentHP { get; protected set; }
         public EquippableGearItem? EquippedGear { get; set; }
+        public DefensiveAttackModifier? Defense { get; set; }
+
+        public Character(int maxHP)
+        {
+            MaxHP = maxHP;
+            CurrentHP = maxHP;
+        }
 
         public void ReceivedHeal(int amount)
         {
@@ -14,10 +21,18 @@
             if (CurrentHP > MaxHP) CurrentHP = MaxHP;
         }
 
-        public void ReceivedDamage(int amount)
+        public int WasAttacked(AttackData anAttack)
         {
-            CurrentHP -= amount;
+            // Apply Defense
+            Defense?.Apply(anAttack); // The modifier application may reduce the damage...
+            int receivedDamage = anAttack.Damage;
+
+            // Calculate new HP value
+            CurrentHP -= receivedDamage;
             if (CurrentHP < 0) CurrentHP = 0;
+
+            // Return damage value received
+            return receivedDamage;
         }
 
         public string GetHPStatus() => $"{CurrentHP}/{MaxHP}";
@@ -46,11 +61,7 @@
         public override string Name => "SKELETON";
         public override StandardAttackType DefaultAttack => new BoneCrunch();
 
-        public Skeleton()
-        {
-            base.MaxHP = 5;
-            base.CurrentHP = base.MaxHP;
-        }
+        public Skeleton() : base(maxHP: 5) { }
     }
 
     public class TrueProgrammer : Character
@@ -58,12 +69,11 @@
         public override string Name { get; }
         public override StandardAttackType DefaultAttack => new Punch();
 
-        public TrueProgrammer(string name)
+        public TrueProgrammer(string name) : base(maxHP: 35)
         {
             Name = name;
-            base.MaxHP = 35;
-            base.CurrentHP = base.MaxHP;
             base.EquippedGear = new Sword();
+            base.Defense = new ObjectSight();
         }
     }
 
@@ -73,11 +83,7 @@
 
         public override StandardAttackType DefaultAttack => new UnravelingAttack();
 
-        public TheUncodedOne()
-        {
-            base.MaxHP = 15;
-            base.CurrentHP = base.MaxHP;
-        }
+        public TheUncodedOne() : base(maxHP: 15) { }
     }
 
     public class VinFletcher : Character
@@ -86,11 +92,20 @@
 
         public override StandardAttackType DefaultAttack => new Punch();
 
-        public VinFletcher()
+        public VinFletcher() : base(maxHP: 15)
         {
-            base.MaxHP = 15;
-            base.CurrentHP = base.MaxHP;
-            EquippedGear = new VinsBow();
+            base.EquippedGear = new VinsBow();
+        }
+    }
+    public class StoneAmarok : Character
+    {
+        public override string Name => "STONE AMAROK";
+
+        public override StandardAttackType DefaultAttack => new Bite();
+
+        public StoneAmarok() : base(maxHP: 4)
+        {
+            Defense = new StoneArmor();
         }
     }
 }
