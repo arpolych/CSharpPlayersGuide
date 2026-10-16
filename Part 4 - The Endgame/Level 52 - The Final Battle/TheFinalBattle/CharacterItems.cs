@@ -26,7 +26,7 @@
             var message = $" >> {playerUnit.Name} has used a healing potion! (+{HealingValue} HP)";
 
             playerUnit.ReceivedHeal(HealingValue);
-            gameState.GetPartyFor(playerUnit).ConsumablesInventory.Remove(this);
+            gameState.GetPartyFor(playerUnit)!.ConsumablesInventory.Remove(this);
             ColoredConsole.WriteLine(message, ConsoleColor.Magenta);
         }
     }
@@ -48,7 +48,7 @@
              */
             var message = $" >> {playerUnit.Name} ";
             var aboutToUnequip = playerUnit.EquippedGear;
-            Party unitParty = gameState.GetPartyFor(playerUnit);
+            Party unitParty = gameState.GetPartyFor(playerUnit)!;
 
             playerUnit.EquippedGear = this;
             unitParty.UnequippedGear.Remove(this);

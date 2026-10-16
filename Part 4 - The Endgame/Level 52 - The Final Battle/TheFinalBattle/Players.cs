@@ -185,7 +185,7 @@
             var availableActions = gameState.GetAvailablePlayerConsoleActions(playerUnit);
             var consoleMenu = new ConsoleMenu<ActionConsoleMenuItem>(availableActions);
 
-            return ChooseFromConsoleMenu(consoleMenu).playerAction;
+            return ChooseFromConsoleMenu(consoleMenu).PlayerAction;
         }
 
         private T ChooseFromConsoleMenu<T>(ConsoleMenu<T> displayedMenu, string userMessage = "What are you going to choose? ")

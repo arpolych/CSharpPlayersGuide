@@ -6,7 +6,7 @@
         public Party Heroes { get; }
         public Party Monsters { get; private set; }
         public Party[] MonsterWaves { get; }
-        private bool HasNextWaveAvailable => _currentWaveIndex < MonsterWaves.Length;
+        private bool HasMoreMonsterWaves => _currentWaveIndex < MonsterWaves.Length;
         private int _currentWaveIndex = 0;
 
         public Battle(Party heroes, params Party[] monsterWaves)
@@ -16,24 +16,17 @@
             Monsters = MonsterWaves[_currentWaveIndex];
         }
 
-        public void Run(int waveIndex)
-        {
-            _currentWaveIndex = waveIndex;
-            Monsters = MonsterWaves[waveIndex];
-            Run();
-        }
-
         public void Run()
         {
             bool gameOver = false;
-            (Party Name, Func<bool> WinningCondition) playingParty
-                = (Name: Heroes, WinningCondition: HeroesWinningCondition);
+            (Party Name, Func<bool> WinningCondition) playingParty = (Name: Heroes, 
+                                                                      WinningCondition: HeroesWinningCondition);
 
             do
             {
                 TraversePartyUnits(playingParty.Name, playingParty.WinningCondition);
 
-                if (!gameOver) NextPlayingParty();
+                if (!gameOver) NextPlayingParty(); 
                 else return;
             } while (true);
 
@@ -44,7 +37,7 @@
                 {
                     DisplayBattleStatus(unit);
 
-                    ColoredConsole.WriteLine($"It is {unit.Name}'s turn...", GetPlayerFor(unit).PrimaryColor);
+                    ColoredConsole.WriteLine($"It is {unit.Name}'s turn...", GetPlayerFor(unit)!.PrimaryColor);
                     p.Player.ChooseAction(unit, this).Run(unit, this);
                     gameOver = winningCondition.Invoke();
 
@@ -67,7 +60,7 @@
                 {
                     _currentWaveIndex++;
 
-                    if (HasNextWaveAvailable)
+                    if (HasMoreMonsterWaves)
                     {
                         ColoredConsole.WriteLine("The heroes won this monster wave!", ConsoleColor.Green);
                         Monsters = MonsterWaves[_currentWaveIndex];
@@ -103,29 +96,32 @@
             else throw new Exception("Can't match this party to retrieve a name!");
         }
 
-        public Party GetPartyFor(Character unit)
+        public Party? GetPartyFor(Character unit)
         {
             if (Heroes.Units.Contains(unit)) return Heroes;
-            else return Monsters;
+            else if (Monsters.Units.Contains(unit)) return Monsters;
+            else return null;
         }
 
-        public Party GetEnemyPartyFor(Character unit)
+        public Party? GetEnemyPartyFor(Character unit)
         {
             if (Heroes.Units.Contains(unit)) return Monsters;
-            else return Heroes;
+            else if (Monsters.Units.Contains(unit)) return Heroes;
+            else return null;
         }
 
-        public IPlayer GetPlayerFor(Character unit) => GetPartyFor(unit).Player;
+        public IPlayer? GetPlayerFor(Character unit) => GetPartyFor(unit)?.Player;
 
         public IEnumerable<ActionConsoleMenuItem> GetAvailablePlayerConsoleActions(Character playerUnit)
         {
             var availableActions = new List<ActionConsoleMenuItem>();
-            var unitParty = GetPartyFor(playerUnit);
+            var unitParty = GetPartyFor(playerUnit)!;
 
             // Add special attack action...
             if (playerUnit.EquippedGear != null)
             {
                 var specialAttackType = playerUnit.EquippedGear.GearAttackType;
+
                 availableActions.Add(new ActionConsoleMenuItem(
                                      new AttackAction(specialAttackType),
                                                       $"Special Attack ({playerUnit.EquippedGear.Name} with {specialAttackType.Name})"));
@@ -133,18 +129,17 @@
 
             // Adds standard attack action...
             availableActions.Add(new ActionConsoleMenuItem(
-                     new AttackAction(playerUnit.DefaultAttack),
-                     $"Standard Attack ({playerUnit.DefaultAttack.Name})"));
+                                 new AttackAction(playerUnit.DefaultAttack),
+                                                  $"Standard Attack ({playerUnit.DefaultAttack.Name})"));
 
             // Adds the equip gear action...
-            if (unitParty.UnequippedGear is List<EquippableGearItem> partyGear
-                && partyGear.Count > 0)
+            if (unitParty.UnequippedGear is List<EquippableGearItem> partyGear && partyGear.Count > 0)
             {
                 var equipGearAction = new UseInventoryItemAction<EquippableGearItem>(partyGear);
                 int gearNum = partyGear.Count;
-                availableActions.Add(
-                    new ActionConsoleMenuItem(equipGearAction,
-                    $"Equip Gear{(gearNum == 1 ? string.Empty : $" ({gearNum})")}"));
+
+                availableActions.Add(new ActionConsoleMenuItem(equipGearAction,
+                                     $"Equip Gear{(gearNum == 1 ? string.Empty : $" ({gearNum})")}"));
             }
 
             // Adds the use consumables action...
@@ -153,9 +148,9 @@
             {
                 var useConsumablesAction = new UseInventoryItemAction<ConsumableItem>(partyConsumables);
                 int consumableNum = partyConsumables.Count;
-                availableActions.Add(
-                    new ActionConsoleMenuItem(useConsumablesAction,
-                    $"Use Consumables{(consumableNum == 1 ? string.Empty : $" ({consumableNum})")}"));
+
+                availableActions.Add(new ActionConsoleMenuItem(useConsumablesAction,
+                                     $"Use Consumables{(consumableNum == 1 ? string.Empty : $" ({consumableNum})")}"));
             }
 
             // Adds the do-nothing action...
@@ -175,8 +170,8 @@
                     {
                         var unitBattleStatus = $"{unit} >> ( {unit.GetHPStatus()} )";
 
-                        if (unit.Equals(unitInTurn))
-                            ColoredConsole.WriteLine(unitBattleStatus, p.Player.SecondaryColor);
+                        if (unit.Equals(unitInTurn)) ColoredConsole.WriteLine(unitBattleStatus,
+                                                                              p.Player.SecondaryColor);
                         else Console.WriteLine(unitBattleStatus);
                     }
                 };
@@ -184,27 +179,25 @@
             ColoredConsole.WriteLine("\n======= *** BATTLE *** =======\n", ConsoleColor.Gray);
             // Display heroes party
             displayUnitStatuses(Heroes);
-
             ColoredConsole.WriteLine("\n===========   VS   ===========\n", ConsoleColor.Gray);
-
             // Display monster party
             displayUnitStatuses(Monsters);
             ColoredConsole.WriteLine("\n=========== ****** ===========\n", ConsoleColor.Gray);
         }
     }
 
-    public record class ActionConsoleMenuItem(IAction playerAction, string Description)
+    public record class ActionConsoleMenuItem(IAction PlayerAction, string Description)
     {
         public override string ToString() => Description;
 
-        public static List<T> FindAllTypeMatchedActions<T>(
-            IEnumerable<ActionConsoleMenuItem> collection) where T : IAction
+        public static List<T> FindAllTypeMatchedActions<T>(IEnumerable<ActionConsoleMenuItem> collection)
+            where T : IAction
         {
             var matchedActions = new List<T>();
 
             foreach (ActionConsoleMenuItem actionMenuItem in collection)
             {
-                if (actionMenuItem.playerAction is T matchedAction)
+                if (actionMenuItem.PlayerAction is T matchedAction)
                 {
                     matchedActions.Add(matchedAction);
                 }
@@ -213,12 +206,12 @@
             return matchedActions;
         }
 
-        public static T FindFirstTypeMatchedAction<T>(
-            IEnumerable<ActionConsoleMenuItem> collection) where T : IAction
+        public static T FindFirstTypeMatchedAction<T>(IEnumerable<ActionConsoleMenuItem> collection)
+            where T : IAction
         {
             foreach (ActionConsoleMenuItem actionMenuItem in collection)
             {
-                if (actionMenuItem.playerAction is T matchedAction)
+                if (actionMenuItem.PlayerAction is T matchedAction)
                 {
                     return matchedAction;
                 }

@@ -33,7 +33,7 @@
                 return;
             }
 
-            var enemyParty = gameState.GetEnemyPartyFor(playerUnit);
+            var enemyParty = gameState.GetEnemyPartyFor(playerUnit)!;
             var target = enemyParty.Units[0];
             ColoredConsole.WriteLine($" >> {playerUnit.Name} used {AttackType.Name} on {target.Name}.", ConsoleColor.Magenta);
 
@@ -100,7 +100,7 @@
         public virtual void Run(Character playerUnit, Battle gameState)
         {
             // Step 1: Retrieve player's item choice for this inventory...
-            var itemChoice = RetrievePlayerItemChoice(playerUnit, gameState, gameState.GetPlayerFor(playerUnit));
+            var itemChoice = RetrievePlayerItemChoice(playerUnit, gameState, gameState.GetPlayerFor(playerUnit)!);
 
             // Step 2: Apply the item to the player's unit...
             // Step 3: Remove the used item from the unit's party inventory...
