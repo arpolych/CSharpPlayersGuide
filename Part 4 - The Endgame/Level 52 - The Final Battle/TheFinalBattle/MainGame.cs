@@ -84,6 +84,7 @@ static void InitializeHeroes(IPlayer heroesPlayer, out Party heroes)
     heroes.ConsumablesInventory.Add(new HealthPotion());
     heroes.ConsumablesInventory.Add(new HealthPotion());
     heroes.ConsumablesInventory.Add(new HealthPotion());
+    heroes.ConsumablesInventory.Add(new SimulasSoup());
 }
 
 static void InitializeMonsters(IPlayer monstersPlayer, out Party monstersWave1, out Party monstersWave2, out Party monstersWave3)

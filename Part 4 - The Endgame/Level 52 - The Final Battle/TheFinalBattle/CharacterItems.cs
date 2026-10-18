@@ -30,6 +30,20 @@
             ColoredConsole.WriteLine(message, ConsoleColor.Magenta);
         }
     }
+
+    public class SimulasSoup : ConsumableItem
+    {
+        public override string Name { get; } = "Simula's Soup";
+
+        public override void Apply(Character playerUnit, Battle gameState)
+        {
+            var message = $" >> {playerUnit.Name} has consumed simulas' soup and is now back to full HP!";
+
+            playerUnit.ReceivedHeal(playerUnit.MaxHP);
+            gameState.GetPartyFor(playerUnit)!.ConsumablesInventory.Remove(this);
+            ColoredConsole.WriteLine(message, ConsoleColor.Magenta);
+        }
+    }
     #endregion
 
     #region - Equippable gear items for player units/characters.
