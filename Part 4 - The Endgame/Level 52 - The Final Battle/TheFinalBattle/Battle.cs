@@ -19,14 +19,14 @@
         public void Run()
         {
             bool gameOver = false;
-            (Party Name, Func<bool> WinningCondition) playingParty = (Name: Heroes, 
+            (Party Name, Func<bool> WinningCondition) playingParty = (Name: Heroes,
                                                                       WinningCondition: HeroesWinningCondition);
 
             do
             {
                 TraversePartyUnits(playingParty.Name, playingParty.WinningCondition);
 
-                if (!gameOver) NextPlayingParty(); 
+                if (!gameOver) NextPlayingParty();
                 else return;
             } while (true);
 
@@ -40,8 +40,8 @@
                     ColoredConsole.WriteLine($"It is {unit.Name}'s turn...", GetPlayerFor(unit)!.PrimaryColor);
                     p.Player.ChooseAction(unit, this).Run(unit, this);
                     gameOver = winningCondition.Invoke();
-
                     Console.WriteLine();
+                    if (gameOver) return;
                 }
             }
 

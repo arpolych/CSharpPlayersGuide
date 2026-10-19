@@ -6,6 +6,42 @@
         AttackData Apply(AttackData anAttack);
     }
 
+    public abstract class OffensiveAttackModifier : IAttackModifier
+    {
+        public abstract string Name { get; }
+        public abstract int DamageIncrease { get; }
+
+        public AttackData Apply(AttackData anAttack)
+        {
+            return ApplyOffense(anAttack);
+        }
+
+        protected abstract AttackData ApplyOffense(AttackData anAttack);
+
+        protected AttackData ApplyDamageIncrease(AttackData anAttack)
+        {
+            int increase = anAttack.IncreaseDamage(DamageIncrease);
+
+            if (increase > 0)
+            {
+                Console.WriteLine($"   >> {Name} increased the attack by {increase} points.");
+            }
+
+            return anAttack;
+        }
+    }
+
+    public class Stone : OffensiveAttackModifier
+    {
+        public override string Name { get; } = "Stone";
+        public override int DamageIncrease { get; } = 3;
+
+        protected override AttackData ApplyOffense(AttackData anAttack)
+        {
+            return base.ApplyDamageIncrease(anAttack);
+        }
+    }
+
     public abstract class DefensiveAttackModifier : IAttackModifier
     {
         public abstract string Name { get; }
@@ -57,4 +93,6 @@
             return anAttack;
         }
     }
+
+
 }

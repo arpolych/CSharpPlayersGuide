@@ -8,6 +8,7 @@
         public int CurrentHP { get; protected set; }
         public EquippableGearItem? EquippedGear { get; set; }
         public DefensiveAttackModifier? Defense { get; set; }
+        public OffensiveAttackModifier? Offense { get; set; }
 
         public Character(int maxHP)
         {
@@ -103,9 +104,10 @@
 
         public override StandardAttackType DefaultAttack => new Bite();
 
-        public StoneAmarok() : base(maxHP: 4)
+        public StoneAmarok() : base(maxHP: 7)
         {
             Defense = new StoneArmor();
+            Offense = new Stone();
         }
     }
 }

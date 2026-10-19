@@ -15,35 +15,46 @@
     public class AttackAction : IAction
     {
         public IAttackType AttackType { get; }
-        private readonly AttackData _attackData;
+        private AttackData AttackData { get; set; }
 
         public AttackAction(IAttackType attackType)
         {
             AttackType = attackType;
-            _attackData = attackType.GenerateAttackData();
+            AttackData = attackType.GenerateAttackData();
         }
 
         public void Run(Character playerUnit, Battle gameState)
         {
             var unitParty = gameState.GetPartyFor(playerUnit);
 
-            if (_attackData.HasMissedTarget())
+            if (AttackData.HasMissedTarget())
             {
                 ColoredConsole.WriteLine($" >> {playerUnit.Name} used {AttackType.Name} and MISSED!", ConsoleColor.Magenta);
                 return;
             }
 
             var enemyParty = gameState.GetEnemyPartyFor(playerUnit)!;
-            var target = enemyParty.Units[0];
+            var target = GetRandomEnemyUnit();
+
+            Character GetRandomEnemyUnit()
+            {
+                int totalEnemyUnits = enemyParty.Units.Count;
+                int enemyUnitIndex = Battle.Randomness.Next(totalEnemyUnits);
+
+                return enemyParty.Units[enemyUnitIndex];
+            }
+
             ColoredConsole.WriteLine($" >> {playerUnit.Name} used {AttackType.Name} on {target.Name}.", ConsoleColor.Magenta);
 
-            int targetDamageReceived = target.WasAttacked(_attackData);
+            if (playerUnit!.Offense != null) AttackData = playerUnit.Offense.Apply(AttackData);
+
+            int targetDamageReceived = target.WasAttacked(AttackData);
             Console.WriteLine($"   >> {AttackType.Name} dealt {targetDamageReceived} to {target.Name}.");
             Console.WriteLine($"   >> {target.Name} is now at {target.GetHPStatus()} HP.");
 
             if (target.CurrentHP == 0)
             {
-                ColoredConsole.WriteLine($"   >> {target.Name} has been defeated!", unitParty.Player.PrimaryColor);
+                ColoredConsole.WriteLine($"   >> {target.Name} has been defeated!", unitParty!.Player.PrimaryColor);
 
                 var acquiredGear = target.TransferGear(unitParty.UnequippedGear);
                 enemyParty.Units.Remove(target);

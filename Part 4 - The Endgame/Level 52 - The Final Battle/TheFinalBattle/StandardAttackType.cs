@@ -107,6 +107,17 @@
             return _hasMissed.Value;
         }
 
+        public int IncreaseDamage(int amount)
+        {
+            if (amount <= 0) return 0;
+            else
+            {
+                Damage += amount;
+
+                return amount;
+            }
+        }
+
         public int DecreaseDamage(int amount)
         {
             int newDamage = Damage - amount;

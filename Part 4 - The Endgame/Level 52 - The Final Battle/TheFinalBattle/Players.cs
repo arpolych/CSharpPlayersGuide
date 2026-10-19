@@ -62,7 +62,7 @@
              * Step 2 & 3: Evaluate each action's chance and return it...
              */
             // Priority action #1: Equip Gear
-            int equipChance = GetEquipGearActionChance(playerUnit, unitParty);
+            int equipChance = GetEquipGearActionChance(playerUnit, unitParty!);
             // [0 - 49] or not happening
             if ((chanceStacks <= roll) && (roll < equipChance))
             {
@@ -72,7 +72,7 @@
             else chanceStacks += equipChance;
 
             // Priority action #2: Use Consumables
-            int consumablesChance = GetConsumablesActionChance(playerUnit, unitParty.ConsumablesInventory.Count);
+            int consumablesChance = GetConsumablesActionChance(playerUnit, unitParty!.ConsumablesInventory.Count);
             // [50 - 74] or [0 - 24]
             if ((chanceStacks <= roll) && (roll < chanceStacks + consumablesChance))
             {
