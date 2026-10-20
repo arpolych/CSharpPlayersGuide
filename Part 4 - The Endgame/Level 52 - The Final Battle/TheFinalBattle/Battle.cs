@@ -33,11 +33,17 @@
             #region - Helper methods in cycling units, parties, as well as the winning conditions...
             void TraversePartyUnits(Party p, Func<bool> winningCondition)
             {
+                var partyPlayer = p.Player;
+
                 foreach (Character unit in p.Units)
                 {
                     DisplayBattleStatus(unit);
 
-                    ColoredConsole.WriteLine($"It is {unit.Name}'s turn...", GetPlayerFor(unit)!.PrimaryColor);
+                    ColoredConsole.WriteLine($"It is {unit.Name}'s turn...", partyPlayer.PrimaryColor);
+                    
+                    if (unit.Taunt is string)
+                        ColoredConsole.WriteLine($" >> {unit.Taunt}", partyPlayer.PrimaryColor);
+
                     p.Player.ChooseAction(unit, this).Run(unit, this);
                     gameOver = winningCondition.Invoke();
                     Console.WriteLine();

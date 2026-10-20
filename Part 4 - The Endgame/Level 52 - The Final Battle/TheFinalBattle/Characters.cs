@@ -9,6 +9,7 @@
         public EquippableGearItem? EquippedGear { get; set; }
         public DefensiveAttackModifier? Defense { get; set; }
         public OffensiveAttackModifier? Offense { get; set; }
+        public virtual string? Taunt { get; }
 
         public Character(int maxHP)
         {
@@ -61,6 +62,7 @@
     {
         public override string Name => "SKELETON";
         public override StandardAttackType DefaultAttack => new BoneCrunch();
+        public override string? Taunt { get; } = "We will repel your spineless assault!";
 
         public Skeleton() : base(maxHP: 5) { }
     }
@@ -81,8 +83,8 @@
     public class TheUncodedOne : Character
     {
         public override string Name => "The Uncoded One";
-
         public override StandardAttackType DefaultAttack => new UnravelingAttack();
+        public override string? Taunt { get; } = "THE UNRAVELLING OF ALL THINGS IS INEVITABLE";
 
         public TheUncodedOne() : base(maxHP: 15) { }
     }
@@ -90,7 +92,6 @@
     public class VinFletcher : Character
     {
         public override string Name => "VIN FLETCHER";
-
         public override StandardAttackType DefaultAttack => new Punch();
 
         public VinFletcher() : base(maxHP: 15)
