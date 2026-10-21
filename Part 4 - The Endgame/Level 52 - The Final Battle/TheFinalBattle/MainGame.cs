@@ -79,6 +79,7 @@ static void InitializeHeroes(IPlayer heroesPlayer, out Party heroes)
     // Adding units...
     heroes.Units.Add(new TrueProgrammer(AskTrueProgrammerName()));
     heroes.Units.Add(new VinFletcher());
+    heroes.UnequippedGear.Add(new Dagger());
 
     // Adding consumable items...
     heroes.ConsumablesInventory.Add(new HealthPotion());
@@ -92,7 +93,9 @@ static void InitializeMonsters(IPlayer monstersPlayer, out Party monstersWave1, 
     // Monster Wave 1
     monstersWave1 = new Party(monstersPlayer);
     // Adding units and consumables...
-    monstersWave1.Units.Add(new Skeleton() { EquippedGear = new Dagger() });
+    var wave1Unit1 = new Skeleton();
+    wave1Unit1.GearInventory.Add(new Dagger());
+    monstersWave1.Units.Add(wave1Unit1);
     monstersWave1.ConsumablesInventory.Add(new HealthPotion());
 
     // Monster Wave 2

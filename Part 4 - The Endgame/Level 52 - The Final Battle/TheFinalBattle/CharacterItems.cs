@@ -61,23 +61,39 @@
              * >> Inventory swap of items error! #NotImplemented#Forgot#Hahah^^
              */
             var message = $" >> {playerUnit.Name} ";
-            var aboutToUnequip = playerUnit.EquippedGear;
+            var currentGearInventory = playerUnit.GearInventory;
             Party unitParty = gameState.GetPartyFor(playerUnit)!;
 
-            playerUnit.EquippedGear = this;
+            playerUnit.GearInventory.Add(this);
             unitParty.UnequippedGear.Remove(this);
 
-            if (aboutToUnequip == null)
+            if (currentGearInventory.Count == 0)
             {
                 message += $"is now equipped with a gear item - {Name}!";
             }
             else
             {
-                message += $"has had the gear item, {aboutToUnequip.Name}, swapped with {Name}!";
-                unitParty.UnequippedGear.Add(aboutToUnequip);
+                message += $"has another gear item, {this.Name}, equipped!";
             }
 
             ColoredConsole.WriteLine(message, ConsoleColor.Magenta);
+        }
+
+        public static string GetGearNames(List<EquippableGearItem> gearInventory)
+        {
+            if (gearInventory.Count == 0) return string.Empty;
+            else
+            {
+                string gearItemsToString = "[";
+
+                foreach (EquippableGearItem gearItem in gearInventory)
+                {
+                    gearItemsToString += $"{gearItem.Name}, ";
+                }
+                gearItemsToString = gearItemsToString[..^2];
+
+                return $"{gearItemsToString}]";
+            }
         }
     }
 

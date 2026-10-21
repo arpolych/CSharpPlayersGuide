@@ -6,7 +6,7 @@
         public abstract StandardAttackType DefaultAttack { get; }
         public int MaxHP { get; protected set; }
         public int CurrentHP { get; protected set; }
-        public EquippableGearItem? EquippedGear { get; set; }
+        public List<EquippableGearItem> GearInventory { get; } = new();
         public DefensiveAttackModifier? Defense { get; set; }
         public OffensiveAttackModifier? Offense { get; set; }
         public virtual string? Taunt { get; }
@@ -40,18 +40,31 @@
         public string GetHPStatus() => $"{CurrentHP}/{MaxHP}";
 
         public override string ToString()
-            => $"{Name} {(EquippedGear != null ? $"[{EquippedGear.Name}]" : string.Empty)}";
-
-        public EquippableGearItem? TransferGear(List<EquippableGearItem> to)
         {
-            if (EquippedGear != null)
+            string toString = $"{Name}";
+
+            if (GearInventory.Count > 0)
             {
-                var acquiredGear = EquippedGear;
+                toString += $" {EquippableGearItem.GetGearNames(GearInventory)}";
+            }
 
-                to.Add(EquippedGear);
-                EquippedGear = null;
+            return toString;
+        }
 
-                return acquiredGear;
+        public List<EquippableGearItem>? TransferGear(List<EquippableGearItem> to)
+        {
+            if (GearInventory.Count > 0)
+            {
+                var acquiredGearItems = new List<EquippableGearItem>();
+
+                foreach (EquippableGearItem gearItem in GearInventory)
+                {
+                    acquiredGearItems.Add(gearItem);
+                    to.Add(gearItem);
+                }
+                GearInventory.Clear();
+
+                return acquiredGearItems;
             }
 
             return null;
@@ -75,7 +88,7 @@
         public TrueProgrammer(string name) : base(maxHP: 35)
         {
             Name = name;
-            base.EquippedGear = new Sword();
+            base.GearInventory.Add(new Sword());
             base.Defense = new ObjectSight();
         }
     }
@@ -96,7 +109,7 @@
 
         public VinFletcher() : base(maxHP: 15)
         {
-            base.EquippedGear = new VinsBow();
+            base.GearInventory.Add(new VinsBow());
         }
     }
     public class StoneAmarok : Character

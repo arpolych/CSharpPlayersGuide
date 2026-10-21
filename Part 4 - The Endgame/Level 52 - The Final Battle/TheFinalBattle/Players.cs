@@ -95,13 +95,16 @@
             int specialAttakChance = 0,
                 standardAttackChance = 100;
 
-            unsafe
-            {
-                CalcAttackActionChance(playerUnit, &specialAttakChance, &standardAttackChance);
-            }
-
             List<AttackAction> availableAttackActions = ActionConsoleMenuItem.FindAllTypeMatchedActions<AttackAction>(availableActions);
-            roll = Battle.Randomness.Next(100); // [0 - 99] re-roll for attack type decision...
+            if (playerUnit.GearInventory.Count != 0)
+            {
+                unsafe
+                {
+                    CalcAttackActionChance(playerUnit, &specialAttakChance, &standardAttackChance);
+                }
+                roll = Battle.Randomness.Next(100); // [0 - 99] re-roll for attack type decision...
+            }
+            else roll = 99;
 
             if ((0 <= roll) && (roll < specialAttakChance))
             {
@@ -122,7 +125,7 @@
         private unsafe void CalcAttackActionChance
             (Character playerUnit, int* pSpecialAttackChance, int* pStandardAttackChance)
         {
-            if (playerUnit.EquippedGear != null)
+            if (playerUnit.GearInventory != null)
                 *pSpecialAttackChance = (60 + Battle.Randomness.Next(21)); // [60 - 80] values...
             else
                 *pSpecialAttackChance = 0;
@@ -154,13 +157,11 @@
         private int GetEquipGearActionChance(Character playerUnit, Party unitParty)
         {
             /*
-             * Condition 1: playerUnit hasn't any gear equipped.
-             * Condition 2: unitParty has available gear.
+             * Condition 1: unitParty has available gear.
              */
-            bool flag1 = playerUnit.EquippedGear == null,
-                 flag2 = unitParty.UnequippedGear.Count > 0;
+            bool flag1 = unitParty.UnequippedGear.Count > 0;
 
-            return (flag1 && flag2) ? 50 : 0;
+            return flag1 ? 50 : 0;
         }
 
         public override ItemGroupTypeInfo ChooseItemTypeGroup(IEnumerable<ItemGroupTypeInfo> itemTypeGroups)

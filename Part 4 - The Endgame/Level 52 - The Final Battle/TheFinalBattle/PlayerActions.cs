@@ -56,12 +56,12 @@
             {
                 ColoredConsole.WriteLine($"   >> {target.Name} has been defeated!", unitParty!.Player.PrimaryColor);
 
-                var acquiredGear = target.TransferGear(unitParty.UnequippedGear);
+                var acquiredGearItems = target.TransferGear(unitParty.UnequippedGear);
                 enemyParty.Units.Remove(target);
 
-                if (acquiredGear != null)
+                if (acquiredGearItems != null)
                 {
-                    Console.WriteLine($"   >> {target.Name}'s gear ({acquiredGear.Name}) was acquired!");
+                    Console.WriteLine($"   >> {target.Name}'s gear ({EquippableGearItem.GetGearNames(acquiredGearItems)}) was acquired!");
                 }
 
                 if (enemyParty.Units.Count == 0)

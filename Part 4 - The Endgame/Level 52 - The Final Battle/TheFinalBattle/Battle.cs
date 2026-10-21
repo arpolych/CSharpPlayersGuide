@@ -16,6 +16,13 @@
             Monsters = MonsterWaves[_currentWaveIndex];
         }
 
+        public void Run(int waveIndex)
+        {
+            Monsters = MonsterWaves[waveIndex];
+            _currentWaveIndex = waveIndex;
+            Run();
+        }
+
         public void Run()
         {
             bool gameOver = false;
@@ -40,7 +47,7 @@
                     DisplayBattleStatus(unit);
 
                     ColoredConsole.WriteLine($"It is {unit.Name}'s turn...", partyPlayer.PrimaryColor);
-                    
+
                     if (unit.Taunt is string)
                         ColoredConsole.WriteLine($" >> {unit.Taunt}", partyPlayer.PrimaryColor);
 
@@ -124,13 +131,14 @@
             var unitParty = GetPartyFor(playerUnit)!;
 
             // Add special attack action...
-            if (playerUnit.EquippedGear != null)
+            if (playerUnit.GearInventory.Count != 0)
             {
-                var specialAttackType = playerUnit.EquippedGear.GearAttackType;
+                var gearChosen = playerUnit.GearInventory.ElementAt(Battle.Randomness.Next(0, playerUnit.GearInventory.Count));
+                var specialAttackType = gearChosen.GearAttackType;
 
                 availableActions.Add(new ActionConsoleMenuItem(
                                      new AttackAction(specialAttackType),
-                                                      $"Special Attack ({playerUnit.EquippedGear.Name} with {specialAttackType.Name})"));
+                                                      $"Special Attack ({gearChosen.Name} with {specialAttackType.Name})"));
             }
 
             // Adds standard attack action...
