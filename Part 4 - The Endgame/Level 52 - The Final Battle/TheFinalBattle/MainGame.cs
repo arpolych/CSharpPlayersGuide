@@ -80,6 +80,9 @@ static void InitializeHeroes(IPlayer heroesPlayer, out Party heroes)
     heroes.Units.Add(new TrueProgrammer(AskTrueProgrammerName()));
     heroes.Units.Add(new VinFletcher());
     heroes.UnequippedGear.Add(new Dagger());
+    heroes.UnequippedGear.Add(new Dagger());
+    heroes.UnequippedGear.Add(new Dagger());
+    heroes.UnequippedGear.Add(new Dagger());
 
     // Adding consumable items...
     heroes.ConsumablesInventory.Add(new HealthPotion());

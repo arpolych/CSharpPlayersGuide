@@ -52,6 +52,7 @@
     public abstract class SpecialAttackType : IAttackType
     {
         public abstract string Name { get; }
+        public int Multiplier { get; internal set; } = 1;
 
         public abstract AttackData GenerateAttackData();
     }
@@ -61,7 +62,7 @@
         public override string Name => "SLASH";
 
         public override AttackData GenerateAttackData()
-            => new(damage: 2, missRate: 21);
+            => new(damage: 2 * Multiplier, missRate: 21);
     }
 
     public class StabAttackType : SpecialAttackType
@@ -69,7 +70,7 @@
         public override string Name => "STAB";
 
         public override AttackData GenerateAttackData()
-            => new(damage: 1, missRate: 23);
+            => new(damage: 1 * Multiplier, missRate: 23);
     }
 
     public class QuickShotAttackType : SpecialAttackType
@@ -77,7 +78,7 @@
         public override string Name => "Quick Shot";
 
         public override AttackData GenerateAttackData()
-            => new(damage: 3, missRate: 50);
+            => new(damage: 3 * Multiplier, missRate: 50);
     }
     #endregion
 

@@ -49,8 +49,29 @@
     #region - Equippable gear items for player units/characters.
     public abstract class EquippableGearItem : IUnitItem
     {
-        public abstract string Name { get; }
+        public abstract string Name { get; protected set; }
         public abstract SpecialAttackType GearAttackType { get; }
+
+        public abstract bool StackDuplicates(EquippableGearItem anotherGearItem);
+
+        protected virtual bool StackDuplicates<T>(EquippableGearItem anotherGearItem)
+            where T : EquippableGearItem
+        {
+            if (anotherGearItem is T)
+            {
+                this.GearAttackType.Multiplier++;
+
+                var examineChar = Name[^1];
+                if (Char.IsDigit(examineChar))
+                {
+                    Name = $"{Name[..^2]}x{GearAttackType.Multiplier}";
+                }
+                else Name += $"x{GearAttackType.Multiplier}";
+
+                return true;
+            }
+            else return false;
+        }
 
         public virtual void Apply(Character playerUnit, Battle gameState)
         {
@@ -64,18 +85,32 @@
             var currentGearInventory = playerUnit.GearInventory;
             Party unitParty = gameState.GetPartyFor(playerUnit)!;
 
-            playerUnit.GearInventory.Add(this);
-            unitParty.UnequippedGear.Remove(this);
 
-            if (currentGearInventory.Count == 0)
+            if (playerUnit.GearInventory.Count == 0)
             {
+                playerUnit.GearInventory.Add(this);
                 message += $"is now equipped with a gear item - {Name}!";
             }
             else
             {
                 message += $"has another gear item, {this.Name}, equipped!";
+
+                bool wasDuplican = false;
+                foreach (var gearItem in playerUnit.GearInventory)
+                {
+                    if (gearItem.StackDuplicates(this))
+                    {
+                        wasDuplican = true;
+                        message += $"\n >> This gear item got stacked with a previous one!!!";
+                        break;
+                    }
+                }
+
+                if (!wasDuplican)
+                    playerUnit.GearInventory.Add(this);
             }
 
+            unitParty.UnequippedGear.Remove(this);
             ColoredConsole.WriteLine(message, ConsoleColor.Magenta);
         }
 
@@ -99,23 +134,32 @@
 
     public class Sword : EquippableGearItem
     {
-        public override string Name => "SWORD";
+        public override string Name { get; protected set; } = "SWORD";
 
         public override SpecialAttackType GearAttackType { get; } = new SlashAttackType();
+
+        public override bool StackDuplicates(EquippableGearItem anotherGearItem)
+            => StackDuplicates<Sword>(anotherGearItem);
     }
 
     public class Dagger : EquippableGearItem
     {
-        public override string Name => "DAGGER";
+        public override string Name { get; protected set; } = "DAGGER";
 
         public override SpecialAttackType GearAttackType { get; } = new StabAttackType();
+
+        public override bool StackDuplicates(EquippableGearItem anotherGearItem)
+            => StackDuplicates<Dagger>(anotherGearItem);
     }
 
     public class VinsBow : EquippableGearItem
     {
-        public override string Name => $"VIN'S BOW";
+        public override string Name { get; protected set; } = $"VIN'S BOW";
 
         public override SpecialAttackType GearAttackType { get; } = new QuickShotAttackType();
+
+        public override bool StackDuplicates(EquippableGearItem anotherGearItem)
+            => StackDuplicates<VinsBow>(anotherGearItem);
     }
     #endregion
 }
