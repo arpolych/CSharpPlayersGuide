@@ -177,26 +177,58 @@
 
         public void DisplayBattleStatus(Character unitInTurn)
         {
-            var displayUnitStatuses =
-                (Party p) =>
-                {
-                    foreach (Character unit in p.Units)
-                    {
-                        var unitBattleStatus = $"{unit} >> ( {unit.GetHPStatus()} )";
+            string battleStatusTopBar = "\n================================ *** BATTLE *** ================================\n";
+            string battleStatusMiddleBar = "\n====================================   VS   ====================================\n";
+            string battleStatusBottomBar = "\n==================================== ****** ====================================\n";
+            var heroesStatusList = CreatePartyOutputStatus(Heroes);
+            var monstersStatusList = CreatePartyOutputStatus(Monsters);
 
-                        if (unit.Equals(unitInTurn)) ColoredConsole.WriteLine(unitBattleStatus,
-                                                                              p.Player.SecondaryColor);
-                        else Console.WriteLine(unitBattleStatus);
-                    }
-                };
-
-            ColoredConsole.WriteLine("\n======= *** BATTLE *** =======\n", ConsoleColor.Gray);
+            ColoredConsole.WriteLine(battleStatusTopBar, ConsoleColor.Gray);
             // Display heroes party
-            displayUnitStatuses(Heroes);
-            ColoredConsole.WriteLine("\n===========   VS   ===========\n", ConsoleColor.Gray);
+            PrintPartyStatus(Heroes.Player, heroesStatusList, true);
+            ColoredConsole.WriteLine(battleStatusMiddleBar, ConsoleColor.Gray);
             // Display monster party
-            displayUnitStatuses(Monsters);
-            ColoredConsole.WriteLine("\n=========== ****** ===========\n", ConsoleColor.Gray);
+            PrintPartyStatus(Monsters.Player, monstersStatusList, false);
+            ColoredConsole.WriteLine(battleStatusBottomBar, ConsoleColor.Gray);
+
+            List<(string, bool)> CreatePartyOutputStatus(Party p)
+            {
+                var partyOutputStatusList = new List<(string, bool)>();
+
+                foreach (Character unit in p.Units)
+                {
+                    var unitBattleStatus = $"{unit} >> ( {unit.GetHPStatus()} )";
+
+                    if (unit.Equals(unitInTurn))
+                        partyOutputStatusList.Add((unitBattleStatus, true));
+                    else
+                        partyOutputStatusList.Add((unitBattleStatus, false));
+
+                }
+
+                return partyOutputStatusList;
+            }
+
+            void PrintPartyStatus(IPlayer p, List<(string, bool)> partyStatusList, bool align)
+            {
+                foreach (var element in partyStatusList)
+                {
+                    if (element.Item2)
+                    {
+                        if (align)
+                            ColoredConsole.WriteLine($"{element.Item1,(-80)}", p.SecondaryColor);
+                        else
+                            ColoredConsole.WriteLine($"{element.Item1,(80)}", p.SecondaryColor);
+                    }
+                    else
+                    {
+                        if (align)
+                            Console.WriteLine($"{element.Item1,(-80)}");
+                        else
+                            Console.WriteLine($"{element.Item1,(80)}");
+                    }
+                }
+            }
         }
     }
 
