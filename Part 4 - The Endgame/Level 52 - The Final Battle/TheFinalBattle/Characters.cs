@@ -124,4 +124,15 @@
             Offense = new Stone();
         }
     }
+
+    public class TheHandOfTheUncodedOne : Character
+    {
+        public override string Name { get; } = "THE HAND OF THE UNCODED ONE";
+        public override StandardAttackType DefaultAttack { get; } = new Punch();
+
+        public TheHandOfTheUncodedOne() : base(30)
+        {
+            GearInventory.Add(new BinaryBlade());
+        }
+    }
 }

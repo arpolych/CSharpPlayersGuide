@@ -161,5 +161,14 @@
         public override bool StackDuplicates(EquippableGearItem anotherGearItem)
             => StackDuplicates<VinsBow>(anotherGearItem);
     }
+
+    public class BinaryBlade : EquippableGearItem
+    {
+        public override string Name { get; protected set; } = "BINARY BLADE";
+        public override SpecialAttackType GearAttackType { get; } = new BitSlash();
+
+        public override bool StackDuplicates(EquippableGearItem anotherGearItem)
+            => StackDuplicates<BinaryBlade>(anotherGearItem);
+    }
     #endregion
 }

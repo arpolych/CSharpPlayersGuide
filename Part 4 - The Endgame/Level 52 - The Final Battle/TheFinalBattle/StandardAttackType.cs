@@ -80,6 +80,14 @@
         public override AttackData GenerateAttackData()
             => new(damage: 3 * Multiplier, missRate: 50);
     }
+
+    public class BitSlash : SpecialAttackType
+    {
+        public override string Name { get; } = "BIT SLASH";
+
+        public override AttackData GenerateAttackData()
+            => new(damage: 3 * Multiplier, missRate: 26);
+    }
     #endregion
 
     public class AttackData

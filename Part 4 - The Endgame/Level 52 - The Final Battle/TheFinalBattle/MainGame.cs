@@ -89,6 +89,8 @@ static void InitializeHeroes(IPlayer heroesPlayer, out Party heroes)
     heroes.ConsumablesInventory.Add(new HealthPotion());
     heroes.ConsumablesInventory.Add(new HealthPotion());
     heroes.ConsumablesInventory.Add(new SimulasSoup());
+    heroes.ConsumablesInventory.Add(new SimulasSoup());
+    heroes.ConsumablesInventory.Add(new SimulasSoup());
 }
 
 static void InitializeMonsters(IPlayer monstersPlayer, out Party monstersWave1, out Party monstersWave2, out Party monstersWave3)
@@ -99,6 +101,7 @@ static void InitializeMonsters(IPlayer monstersPlayer, out Party monstersWave1, 
     var wave1Unit1 = new Skeleton();
     wave1Unit1.GearInventory.Add(new Dagger());
     monstersWave1.Units.Add(wave1Unit1);
+    monstersWave1.Units.Add(new TheHandOfTheUncodedOne());
     monstersWave1.ConsumablesInventory.Add(new HealthPotion());
 
     // Monster Wave 2
