@@ -85,7 +85,7 @@
         public override string Name { get; }
         public override StandardAttackType DefaultAttack => new Punch();
 
-        public TrueProgrammer(string name) : base(maxHP: 35)
+        public TrueProgrammer(string name) : base(maxHP: 75)
         {
             Name = name;
             base.GearInventory.Add(new Sword());
@@ -107,7 +107,7 @@
         public override string Name => "VIN FLETCHER";
         public override StandardAttackType DefaultAttack => new Punch();
 
-        public VinFletcher() : base(maxHP: 15)
+        public VinFletcher() : base(maxHP: 35)
         {
             base.GearInventory.Add(new VinsBow());
         }
