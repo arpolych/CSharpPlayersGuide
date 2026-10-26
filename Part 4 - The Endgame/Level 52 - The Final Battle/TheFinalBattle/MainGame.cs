@@ -100,9 +100,9 @@ static void InitializeMonsters(IPlayer monstersPlayer, out Party monstersWave1, 
     // Adding units and consumables...
     var wave1Unit1 = new Skeleton();
     wave1Unit1.GearInventory.Add(new Dagger());
-    wave1Unit1.GearInventory.Add(new Dagger());
-    wave1Unit1.GearInventory.Add(new Dagger());
-    wave1Unit1.GearInventory.Add(new Dagger());
+    monstersWave1.UnequippedGear.Add(new Dagger());
+    monstersWave1.UnequippedGear.Add(new Dagger());
+    monstersWave1.UnequippedGear.Add(new Dagger());
     monstersWave1.Units.Add(wave1Unit1);
     monstersWave1.Units.Add(new TheHandOfTheUncodedOne());
     monstersWave1.ConsumablesInventory.Add(new HealthPotion());
