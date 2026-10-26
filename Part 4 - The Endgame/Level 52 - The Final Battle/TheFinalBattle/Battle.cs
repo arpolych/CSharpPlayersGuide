@@ -2,6 +2,7 @@
 {
     public class Battle
     {
+        public const int ChoiceTimeForPC = 100;
         public static Random Randomness { get; } = new Random();
         public Party Heroes { get; }
         public Party Monsters { get; private set; }

@@ -59,7 +59,7 @@
         {
             if (anotherGearItem is T)
             {
-                this.GearAttackType.Multiplier++;
+                this.GearAttackType.Multiplier += anotherGearItem.GearAttackType.Multiplier;
 
                 var examineChar = Name[^1];
                 if (Char.IsDigit(examineChar))
