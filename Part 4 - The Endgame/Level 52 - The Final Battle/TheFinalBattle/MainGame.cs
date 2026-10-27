@@ -121,6 +121,8 @@ static void InitializeMonsters(IPlayer monstersPlayer, out Party monstersWave1, 
     // Adding units and consumables...
     monstersWave3.Units.Add(new StoneAmarok());
     monstersWave3.Units.Add(new StoneAmarok());
+    monstersWave3.Units.Add(new StoneAmarok());
+    monstersWave3.Units.Add(new StoneAmarok());
     monstersWave3.Units.Add(new TheUncodedOne());
     monstersWave3.ConsumablesInventory.Add(new HealthPotion());
 }
