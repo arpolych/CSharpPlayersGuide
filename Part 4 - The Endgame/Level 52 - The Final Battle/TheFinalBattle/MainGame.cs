@@ -99,7 +99,7 @@ static void InitializeMonsters(IPlayer monstersPlayer, out Party monstersWave1, 
     monstersWave1 = new Party(monstersPlayer);
     // Adding units and consumables...
     var wave1Unit1 = new Skeleton();
-    wave1Unit1.GearInventory.Add(new Dagger());
+    wave1Unit1.SpecialGearInventory.Add(new Dagger());
     monstersWave1.UnequippedGear.Add(new Dagger());
     monstersWave1.UnequippedGear.Add(new Dagger());
     monstersWave1.UnequippedGear.Add(new Dagger());

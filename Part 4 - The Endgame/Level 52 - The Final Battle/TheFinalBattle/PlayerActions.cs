@@ -46,7 +46,7 @@
 
             ColoredConsole.WriteLine($" >> {playerUnit.Name} used {AttackType.Name} on {target.Name}.", ConsoleColor.Magenta);
 
-            if (playerUnit!.Offense != null) AttackData = playerUnit.Offense.Apply(AttackData);
+            if (playerUnit!.Offense != null) AttackData = playerUnit.Offense.ApplyOn(AttackData);
 
             int targetDamageReceived = target.WasAttacked(AttackData);
             Console.WriteLine($"   >> {AttackType.Name} dealt {targetDamageReceived} to {target.Name}.");

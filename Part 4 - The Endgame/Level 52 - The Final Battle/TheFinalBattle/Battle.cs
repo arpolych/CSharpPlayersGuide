@@ -132,9 +132,9 @@
             var unitParty = GetPartyFor(playerUnit)!;
 
             // Add special attack action...
-            if (playerUnit.GearInventory.Count != 0)
+            if (playerUnit.SpecialGearInventory.Count != 0)
             {
-                var gearChosen = playerUnit.GearInventory.ElementAt(Battle.Randomness.Next(0, playerUnit.GearInventory.Count));
+                var gearChosen = playerUnit.SpecialGearInventory.ElementAt(Battle.Randomness.Next(0, playerUnit.SpecialGearInventory.Count));
                 var specialAttackType = gearChosen.GearAttackType;
 
                 availableActions.Add(new ActionConsoleMenuItem(
@@ -144,8 +144,8 @@
 
             // Adds standard attack action...
             availableActions.Add(new ActionConsoleMenuItem(
-                                 new AttackAction(playerUnit.DefaultAttack),
-                                                  $"Standard Attack ({playerUnit.DefaultAttack.Name})"));
+                                 new AttackAction(playerUnit.NormalWeapon),
+                                                  $"Standard Attack ({playerUnit.NormalWeapon.Name})"));
 
             // Adds the equip gear action...
             if (unitParty.UnequippedGear is List<EquippableGearItem> partyGear && partyGear.Count > 0)

@@ -3,7 +3,7 @@
     public interface IAttackModifier
     {
         string Name { get; }
-        AttackData Apply(AttackData anAttack);
+        AttackData ApplyOn(AttackData attackData);
     }
 
     public abstract class OffensiveAttackModifier : IAttackModifier
@@ -11,23 +11,23 @@
         public abstract string Name { get; }
         public abstract int DamageIncrease { get; }
 
-        public AttackData Apply(AttackData anAttack)
+        public AttackData ApplyOn(AttackData attackData)
         {
-            return ApplyOffense(anAttack);
+            return ApplyOffenseOn(attackData);
         }
 
-        protected abstract AttackData ApplyOffense(AttackData anAttack);
+        protected abstract AttackData ApplyOffenseOn(AttackData attackData);
 
-        protected AttackData ApplyDamageIncrease(AttackData anAttack)
+        protected AttackData ApplyDamageIncreaseOn(AttackData attackData)
         {
-            int increase = anAttack.IncreaseDamage(DamageIncrease);
+            int increase = attackData.IncreaseDamage(DamageIncrease);
 
             if (increase > 0)
             {
                 Console.WriteLine($"   >> {Name} increased the attack by {increase} points.");
             }
 
-            return anAttack;
+            return attackData;
         }
     }
 
@@ -36,9 +36,31 @@
         public override string Name { get; } = "Stone";
         public override int DamageIncrease { get; } = 3;
 
-        protected override AttackData ApplyOffense(AttackData anAttack)
+        protected override AttackData ApplyOffenseOn(AttackData attackData)
         {
-            return base.ApplyDamageIncrease(anAttack);
+            return base.ApplyDamageIncreaseOn(attackData);
+        }
+    }
+
+    public class BinaryHelmIron : OffensiveAttackModifier
+    {
+        public override string Name => "Binary Helm Iron";
+        public override int DamageIncrease
+        {
+            get
+            {
+                string temp = string.Empty;
+
+                for (int i = 0; i < 3; i++)
+                    temp += Battle.Randomness.Next(2);
+
+                return Convert.ToInt32(temp);
+            }
+        }
+
+        protected override AttackData ApplyOffenseOn(AttackData attackData)
+        {
+            throw new NotImplementedException();
         }
     }
 
@@ -47,23 +69,23 @@
         public abstract string Name { get; }
         public abstract int DamageReduction { get; }
 
-        public AttackData Apply(AttackData anAttack)
+        public AttackData ApplyOn(AttackData attackData)
         {
-            return ApplyDefense(anAttack);
+            return ApplyDefenseOn(attackData);
         }
 
-        protected abstract AttackData ApplyDefense(AttackData anAttack);
+        protected abstract AttackData ApplyDefenseOn(AttackData attackData);
 
-        protected AttackData ApplyDamageReduction(AttackData anAttack)
+        protected AttackData ApplyDamageReductionOn(AttackData attackData)
         {
-            int reduction = anAttack.DecreaseDamage(DamageReduction);
+            int reduction = attackData.DecreaseDamage(DamageReduction);
 
             if (reduction > 0)
             {
                 Console.WriteLine($"   >> {Name} reduced the attack by {reduction} point.");
             }
 
-            return anAttack;
+            return attackData;
         }
     }
 
@@ -72,9 +94,9 @@
         public override string Name { get; } = "STONE ARMOR";
         public override int DamageReduction { get; } = 1;
 
-        protected override AttackData ApplyDefense(AttackData anAttack)
+        protected override AttackData ApplyDefenseOn(AttackData attackData)
         {
-            return base.ApplyDamageReduction(anAttack);
+            return base.ApplyDamageReductionOn(attackData);
         }
     }
 
@@ -83,16 +105,36 @@
         public override string Name { get; } = "OBJECT SIGHT";
         public override int DamageReduction { get; } = 2;
 
-        protected override AttackData ApplyDefense(AttackData anAttack)
+        protected override AttackData ApplyDefenseOn(AttackData attackData)
         {
-            if (anAttack.DamageType == DamageType.Decoding)
+            if (attackData.DamageType == DamageType.Decoding)
             {
-                return base.ApplyDamageReduction(anAttack);
+                return base.ApplyDamageReductionOn(attackData);
             }
 
-            return anAttack;
+            return attackData;
         }
     }
 
+    public class BinaryHelmArmor : DefensiveAttackModifier
+    {
+        public override string Name => "B-HELM ARMOR";
+        public override int DamageReduction
+        {
+            get
+            {
+                string temp = string.Empty;
 
+                for (int i = 0; i < 3; i++)
+                    temp += Battle.Randomness.Next(3);
+
+                return Convert.ToInt32(temp);
+            }
+        }
+
+        protected override AttackData ApplyDefenseOn(AttackData attackData)
+        {
+            return base.ApplyDamageReductionOn(attackData);
+        }
+    }
 }

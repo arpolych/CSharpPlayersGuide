@@ -7,13 +7,13 @@
     }
 
     #region - Standard Character Attack Types.
-    public abstract class StandardAttackType : IAttackType
+    public abstract class NormalAttackType : IAttackType
     {
         public abstract string Name { get; }
         public abstract AttackData GenerateAttackData();
     }
 
-    public class Punch : StandardAttackType
+    public class Punch : NormalAttackType
     {
         public override string Name => "PUNCH";
 
@@ -21,7 +21,7 @@
             => new(damage: 1, missRate: 15);
     }
 
-    public class BoneCrunch : StandardAttackType
+    public class BoneCrunch : NormalAttackType
     {
         public override string Name => "BONE CRUNCH";
 
@@ -29,7 +29,7 @@
             => new(damage: Battle.Randomness.Next(2), missRate: 12);
     }
 
-    public class UnravelingAttack : StandardAttackType
+    public class UnravelingAttack : NormalAttackType
     {
         public override string Name => "UNRAVELING";
 
@@ -39,7 +39,7 @@
                    damageType: DamageType.Decoding);
     }
 
-    public class Bite : StandardAttackType
+    public class Bite : NormalAttackType
     {
         public override string Name => "BITE";
 
@@ -53,6 +53,11 @@
     {
         public abstract string Name { get; }
         public int Multiplier { get; internal set; } = 1;
+        public EquippableGearItem? Weapon { get; }
+
+        public SpecialAttackType() { }
+
+        public SpecialAttackType(EquippableGearItem weapon) { Weapon = weapon; }
 
         public abstract AttackData GenerateAttackData();
     }
@@ -87,6 +92,17 @@
 
         public override AttackData GenerateAttackData()
             => new(damage: 3 * Multiplier, missRate: 26);
+    }
+
+    public class BinaryHelmPoweredSlash : SpecialAttackType
+    {
+        public override string Name => "B-HELM POWERED SLASH";
+
+        public BinaryHelmPoweredSlash(EquippableGearItem theBinaryHelm)
+            : base(theBinaryHelm) { }
+
+        public override AttackData GenerateAttackData()
+            => new(damage: ((3 * Multiplier) + Weapon!.GearOffenseModifier!.DamageIncrease), missRate: 11);
     }
     #endregion
 

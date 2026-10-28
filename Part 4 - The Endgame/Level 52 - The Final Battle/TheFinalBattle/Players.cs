@@ -96,7 +96,7 @@
                 standardAttackChance = 100;
 
             List<AttackAction> availableAttackActions = ActionConsoleMenuItem.FindAllTypeMatchedActions<AttackAction>(availableActions);
-            if (playerUnit.GearInventory.Count != 0)
+            if (playerUnit.SpecialGearInventory.Count != 0)
             {
                 unsafe
                 {
@@ -114,7 +114,7 @@
             else if ((specialAttakChance <= roll) && (roll < 100))
             {
                 return AttackAction.RetrieveAttackActionWithType
-                    <StandardAttackType>(availableAttackActions);
+                    <NormalAttackType>(availableAttackActions);
             }
             else
             {
@@ -125,7 +125,7 @@
         private unsafe void CalcAttackActionChance
             (Character playerUnit, int* pSpecialAttackChance, int* pStandardAttackChance)
         {
-            if (playerUnit.GearInventory != null)
+            if (playerUnit.SpecialGearInventory != null)
                 *pSpecialAttackChance = (60 + Battle.Randomness.Next(21)); // [60 - 80] values...
             else
                 *pSpecialAttackChance = 0;

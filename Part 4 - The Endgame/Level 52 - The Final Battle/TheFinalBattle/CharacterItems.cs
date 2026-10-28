@@ -25,7 +25,7 @@
         {
             var message = $" >> {playerUnit.Name} has used a healing potion! (+{HealingValue} HP)";
 
-            playerUnit.ReceivedHeal(HealingValue);
+            playerUnit.WasHealed(HealingValue);
             gameState.GetPartyFor(playerUnit)!.ConsumablesInventory.Remove(this);
             ColoredConsole.WriteLine(message, ConsoleColor.Magenta);
         }
@@ -39,7 +39,7 @@
         {
             var message = $" >> {playerUnit.Name} has consumed simulas' soup and is now back to full HP!";
 
-            playerUnit.ReceivedHeal(playerUnit.MaxHP);
+            playerUnit.WasHealed(playerUnit.MaxHP);
             gameState.GetPartyFor(playerUnit)!.ConsumablesInventory.Remove(this);
             ColoredConsole.WriteLine(message, ConsoleColor.Magenta);
         }
@@ -51,6 +51,17 @@
     {
         public abstract string Name { get; protected set; }
         public abstract SpecialAttackType GearAttackType { get; }
+        public DefensiveAttackModifier? GearDefenseModifier { get; }
+        public OffensiveAttackModifier? GearOffenseModifier { get; }
+
+        public EquippableGearItem() { }
+
+        public EquippableGearItem(DefensiveAttackModifier defModifier,
+                                  OffensiveAttackModifier offModifier)
+        {
+            GearDefenseModifier = defModifier;
+            GearOffenseModifier = offModifier;
+        }
 
         public abstract bool StackDuplicates(EquippableGearItem anotherGearItem);
 
@@ -82,13 +93,13 @@
              * >> Inventory swap of items error! #NotImplemented#Forgot#Hahah^^
              */
             var message = $" >> {playerUnit.Name} ";
-            var currentGearInventory = playerUnit.GearInventory;
+            var currentGearInventory = playerUnit.SpecialGearInventory;
             Party unitParty = gameState.GetPartyFor(playerUnit)!;
 
 
-            if (playerUnit.GearInventory.Count == 0)
+            if (playerUnit.SpecialGearInventory.Count == 0)
             {
-                playerUnit.GearInventory.Add(this);
+                playerUnit.SpecialGearInventory.Add(this);
                 message += $"is now equipped with a gear item - {Name}!";
             }
             else
@@ -96,7 +107,7 @@
                 message += $"has another gear item, {this.Name}, equipped!";
 
                 bool wasDuplican = false;
-                foreach (var gearItem in playerUnit.GearInventory)
+                foreach (var gearItem in playerUnit.SpecialGearInventory)
                 {
                     if (gearItem.StackDuplicates(this))
                     {
@@ -107,7 +118,7 @@
                 }
 
                 if (!wasDuplican)
-                    playerUnit.GearInventory.Add(this);
+                    playerUnit.SpecialGearInventory.Add(this);
             }
 
             unitParty.UnequippedGear.Remove(this);
@@ -169,6 +180,21 @@
 
         public override bool StackDuplicates(EquippableGearItem anotherGearItem)
             => StackDuplicates<BinaryBlade>(anotherGearItem);
+    }
+
+    public class BinaryHelm : EquippableGearItem
+    {
+        public override string Name { get; protected set; } = "BINARY HELM";
+        public override SpecialAttackType GearAttackType { get; }
+
+        public BinaryHelm()
+            : base(new BinaryHelmArmor(), new BinaryHelmIron())
+        {
+            GearAttackType = new BinaryHelmPoweredSlash(this);
+        }
+
+        public override bool StackDuplicates(EquippableGearItem anotherGearItem)
+            => StackDuplicates<BinaryHelm>(anotherGearItem);
     }
     #endregion
 }
