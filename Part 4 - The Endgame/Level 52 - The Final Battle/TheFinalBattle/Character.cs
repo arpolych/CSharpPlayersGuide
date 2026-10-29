@@ -1,4 +1,6 @@
-﻿namespace TheFinalBattle
+﻿using System.Numerics;
+
+namespace TheFinalBattle
 {
     public abstract class Character
     {
@@ -20,6 +22,13 @@
             CurrentHP = maxHP;
         }
 
+        public bool IsHPAtOrBelow(int percentage)
+        {
+            double currentPercentage = (double)CurrentHP / (double)MaxHP;
+
+            return currentPercentage <= (percentage / 100.0);
+        }
+
         public void WasHealed(int amount)
         {
             CurrentHP += amount;
@@ -28,9 +37,10 @@
 
         public int WasAttacked(AttackData attackData)
         {
-            // Apply Defense
+            // Apply Defense from hero's defense modification
             Defense?.ApplyOn(attackData); // The modifier application may reduce the damage...
 
+            // Apply Defense modifications from hero's gear
             foreach (var specialGear in SpecialGearInventory)
             {
                 specialGear.GearDefenseModifier?.ApplyOn(attackData);

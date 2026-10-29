@@ -1,4 +1,8 @@
-﻿namespace TheFinalBattle
+﻿using System.Runtime.InteropServices.Marshalling;
+using System.Text;
+using TheFinalBattle.BattleStatus;
+
+namespace TheFinalBattle
 {
     public class Battle
     {
@@ -178,55 +182,43 @@
 
         public void DisplayBattleStatus(Character unitInTurn)
         {
-            string battleStatusTopBar = "\n================================ *** BATTLE *** ================================\n";
-            string battleStatusMiddleBar = "\n====================================   VS   ====================================\n";
-            string battleStatusBottomBar = "\n==================================== ****** ====================================\n";
-            var heroesStatusList = CreatePartyOutputStatus(Heroes);
-            var monstersStatusList = CreatePartyOutputStatus(Monsters);
+            string topLines = "\n================================ *** BATTLE *** ================================\n";
+            string middleLines = "\n====================================   VS   ====================================\n";
+            string bottomLines = "\n==================================== ****** ====================================\n";
+            InfoLog battleLog = new();
 
-            ColoredConsole.WriteLine(battleStatusTopBar, ConsoleColor.Gray);
-            // Display heroes party
-            PrintPartyStatus(Heroes.Player, heroesStatusList, true);
-            ColoredConsole.WriteLine(battleStatusMiddleBar, ConsoleColor.Gray);
-            // Display monster party
-            PrintPartyStatus(Monsters.Player, monstersStatusList, false);
-            ColoredConsole.WriteLine(battleStatusBottomBar, ConsoleColor.Gray);
+            battleLog.Append(new Info(topLines, ConsoleColor.Gray));
+            AppendUnitInfoToLog(Heroes, ConsoleAlignment.LEFT);
+            battleLog.Append(new Info(middleLines, ConsoleColor.Gray));
+            AppendUnitInfoToLog(Monsters, ConsoleAlignment.RIGHT);
+            battleLog.Append(new Info(bottomLines, ConsoleColor.Gray));
+            battleLog.PrintToConsole();
 
-            List<(string, bool)> CreatePartyOutputStatus(Party p)
+            void AppendUnitInfoToLog(Party p, ConsoleAlignment alignment)
             {
-                var partyOutputStatusList = new List<(string, bool)>();
-
                 foreach (Character unit in p.Units)
                 {
-                    var unitBattleStatus = $"{unit} >> ( {unit.GetHPStatus()} )";
+                    string text = $"{unit} >> ( {unit.GetHPStatus()} )";
+                    var textColor = unit.Equals(unitInTurn) ? p.Player.SecondaryColor : ConsoleColor.White;
+                    bool textAppendNewLine = !unit.IsHPAtOrBelow(percentage: 50);
 
-                    if (unit.Equals(unitInTurn))
-                        partyOutputStatusList.Add((unitBattleStatus, true));
-                    else
-                        partyOutputStatusList.Add((unitBattleStatus, false));
-
-                }
-
-                return partyOutputStatusList;
-            }
-
-            void PrintPartyStatus(IPlayer p, List<(string, bool)> partyStatusList, bool align)
-            {
-                foreach (var element in partyStatusList)
-                {
-                    if (element.Item2)
+                    if (textAppendNewLine)
                     {
-                        if (align)
-                            ColoredConsole.WriteLine($"{element.Item1,(-80)}", p.SecondaryColor);
-                        else
-                            ColoredConsole.WriteLine($"{element.Item1,(80)}", p.SecondaryColor);
+                        battleLog.Append(new Info(text, textColor, alignment));
                     }
                     else
                     {
-                        if (align)
-                            Console.WriteLine($"{element.Item1,(-80)}");
+                        battleLog.Append(new Info(text, textColor, alignment, false));
+
+                        if (unit.IsHPAtOrBelow(percentage: 30))
+                        {
+                            battleLog.Append(new Info("[ !!! ]", ConsoleColor.DarkRed, alignment, true));
+
+                        }
                         else
-                            Console.WriteLine($"{element.Item1,(80)}");
+                        {
+                            battleLog.Append(new Info("[ ! ]", ConsoleColor.DarkYellow, alignment, true));
+                        }
                     }
                 }
             }
