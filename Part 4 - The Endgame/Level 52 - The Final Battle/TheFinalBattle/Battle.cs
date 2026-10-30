@@ -182,43 +182,48 @@ namespace TheFinalBattle
 
         public void DisplayBattleStatus(Character unitInTurn)
         {
-            string topLines = "\n================================ *** BATTLE *** ================================\n";
-            string middleLines = "\n====================================   VS   ====================================\n";
-            string bottomLines = "\n==================================== ****** ====================================\n";
+            string topLines = "================================ *** BATTLE *** ================================";
+            string middleLines = "====================================   VS   ====================================";
+            string bottomLines = "==================================== ****** ====================================";
             InfoLog battleLog = new();
 
-            battleLog.Append(new Info(topLines, ConsoleColor.Gray));
-            AppendUnitInfoToLog(Heroes, ConsoleAlignment.LEFT);
-            battleLog.Append(new Info(middleLines, ConsoleColor.Gray));
-            AppendUnitInfoToLog(Monsters, ConsoleAlignment.RIGHT);
-            battleLog.Append(new Info(bottomLines, ConsoleColor.Gray));
+            battleLog.Append(new Info($"\n{topLines}\n\n", ConsoleColor.Gray));
+            AppendUnitInfoToLog(Heroes, whitespace: 0);
+            battleLog.Append(new Info($"\n{middleLines}\n\n", ConsoleColor.Gray));
+            AppendUnitInfoToLog(Monsters, whitespace: 80);
+            battleLog.Append(new Info($"\n{bottomLines}\n\n", ConsoleColor.Gray));
             battleLog.PrintToConsole();
 
-            void AppendUnitInfoToLog(Party p, ConsoleAlignment alignment)
+            void AppendUnitInfoToLog(Party p, int whitespace)
             {
                 foreach (Character unit in p.Units)
                 {
-                    string text = $"{unit} >> ( {unit.GetHPStatus()} )";
-                    var textColor = unit.Equals(unitInTurn) ? p.Player.SecondaryColor : ConsoleColor.White;
-                    bool textAppendNewLine = !unit.IsHPAtOrBelow(percentage: 50);
+                    string unitInfo = $"{unit} >> ( {unit.GetHPStatus()} )";
+                    var unitInfoColor = unit.Equals(unitInTurn) ? p.Player.SecondaryColor : ConsoleColor.White;
+                    bool isUnitBelow25PerHP = unit.IsHPAtOrBelow(percentage: 25);
+                    bool isUnitBelow50PerHP = unit.IsHPAtOrBelow(percentage: 50);
+                    int currentWhitespace = whitespace;
 
-                    if (textAppendNewLine)
+                    currentWhitespace -= unitInfo.Length;
+                    if (isUnitBelow25PerHP)
                     {
-                        battleLog.Append(new Info(text, textColor, alignment));
+                        string hpWarning = $" [ !!! ]\n";
+
+                        currentWhitespace -= (hpWarning.Length - 1);
+                        battleLog.Append(new Info($"{unitInfo}", unitInfoColor, currentWhitespace));
+                        battleLog.Append(new Info($" [ !!! ]\n", ConsoleColor.DarkRed));
+                    }
+                    else if (isUnitBelow50PerHP)
+                    {
+                        string hpWarning = $" [ !! ]\n";
+
+                        currentWhitespace -= (hpWarning.Length - 1);
+                        battleLog.Append(new Info($"{unitInfo}", unitInfoColor, currentWhitespace));
+                        battleLog.Append(new Info($" [ !! ]\n", ConsoleColor.DarkYellow));
                     }
                     else
                     {
-                        battleLog.Append(new Info(text, textColor, alignment, false));
-
-                        if (unit.IsHPAtOrBelow(percentage: 30))
-                        {
-                            battleLog.Append(new Info("[ !!! ]", ConsoleColor.DarkRed, alignment, true));
-
-                        }
-                        else
-                        {
-                            battleLog.Append(new Info("[ ! ]", ConsoleColor.DarkYellow, alignment, true));
-                        }
+                        battleLog.Append(new Info($"{unitInfo}\n", unitInfoColor, currentWhitespace));
                     }
                 }
             }

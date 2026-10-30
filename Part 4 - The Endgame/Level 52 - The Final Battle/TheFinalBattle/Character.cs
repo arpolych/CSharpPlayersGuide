@@ -1,6 +1,4 @@
-﻿using System.Numerics;
-
-namespace TheFinalBattle
+﻿namespace TheFinalBattle
 {
     public abstract class Character
     {
