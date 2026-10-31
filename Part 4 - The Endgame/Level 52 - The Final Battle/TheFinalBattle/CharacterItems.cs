@@ -12,6 +12,23 @@
         public abstract string Name { get; }
 
         public abstract void Apply(Character playerUnit, Battle gameState);
+
+        public static string GetConsumableNames(List<ConsumableItem> consumablesInventory)
+        {
+            if (consumablesInventory.Count == 0) return string.Empty;
+            else
+            {
+                string consumableItemsString = "[";
+
+                foreach (ConsumableItem consumableItem in consumablesInventory)
+                {
+                    consumableItemsString += $"{consumableItem.Name}, ";
+                }
+                consumableItemsString = consumableItemsString[..^2];
+
+                return $"{consumableItemsString}]";
+            }
+        }
     }
 
     public class HealthPotion : ConsumableItem

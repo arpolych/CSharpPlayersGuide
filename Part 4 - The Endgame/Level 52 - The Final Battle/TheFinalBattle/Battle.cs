@@ -1,5 +1,4 @@
-﻿using System.Runtime.InteropServices.Marshalling;
-using System.Text;
+﻿using System.Text;
 using TheFinalBattle.BattleStatus;
 
 namespace TheFinalBattle
@@ -186,15 +185,25 @@ namespace TheFinalBattle
             string middleLines = "====================================   VS   ====================================";
             string bottomLines = "==================================== ****** ====================================";
             InfoLog battleLog = new();
-
+            var heroesPlayer = Heroes.Player;
+            var monstersPlayer = Monsters.Player;
+            
             battleLog.Append(new Info($"\n{topLines}\n\n", ConsoleColor.Gray));
-            AppendUnitInfoToLog(Heroes, whitespace: 0);
-            battleLog.Append(new Info($"\n{middleLines}\n\n", ConsoleColor.Gray));
-            AppendUnitInfoToLog(Monsters, whitespace: 80);
-            battleLog.Append(new Info($"\n{bottomLines}\n\n", ConsoleColor.Gray));
+            battleLog.Append(new Info($"*** The Heroes ***\n", heroesPlayer.PrimaryColor));
+            AppendPartyUnitsInfoToLog(Heroes, whitespace: 0);
+            battleLog.Append(new Info($"\n>> Heroes' Inventory: ", heroesPlayer.PrimaryColor));
+            AppenedPartyInventoryToLog(Heroes, whitespace: 0);
+
+            battleLog.Append(new Info($"\n\n{middleLines}\n\n", ConsoleColor.Gray));
+            battleLog.Append(new Info($"*** The Monsters ***\n", monstersPlayer.PrimaryColor));
+            AppendPartyUnitsInfoToLog(Monsters, whitespace: 80);
+            battleLog.Append(new Info($"\n>> Monsters' Inventory: ", monstersPlayer.PrimaryColor));
+            AppenedPartyInventoryToLog(Monsters, whitespace: 0);
+
+            battleLog.Append(new Info($"\n\n{bottomLines}\n\n", ConsoleColor.Gray));
             battleLog.PrintToConsole();
 
-            void AppendUnitInfoToLog(Party p, int whitespace)
+            void AppendPartyUnitsInfoToLog(Party p, int whitespace)
             {
                 foreach (Character unit in p.Units)
                 {
@@ -226,6 +235,15 @@ namespace TheFinalBattle
                         battleLog.Append(new Info($"{unitInfo}\n", unitInfoColor, currentWhitespace));
                     }
                 }
+            }
+
+            void AppenedPartyInventoryToLog(Party p, int whitespace)
+            {
+                string unequippedGear = EquippableGearItem.GetGearNames(p.UnequippedGear);
+                string consumables = ConsumableItem.GetConsumableNames(p.ConsumablesInventory);
+
+                battleLog.Append(new Info($"\n   - Unequipped Gear: {unequippedGear}"));
+                battleLog.Append(new Info($"\n   - Consumables: {consumables}"));
             }
         }
     }
