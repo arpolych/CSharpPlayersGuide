@@ -187,19 +187,19 @@ namespace TheFinalBattle
             InfoLog battleLog = new();
             var heroesPlayer = Heroes.Player;
             var monstersPlayer = Monsters.Player;
-            
+
             battleLog.Append(new Info($"\n{topLines}\n\n", ConsoleColor.Gray));
             battleLog.Append(new Info($"*** The Heroes ***\n", heroesPlayer.PrimaryColor));
             AppendPartyUnitsInfoToLog(Heroes, whitespace: 0);
-            battleLog.Append(new Info($"\n>> Heroes' Inventory: ", heroesPlayer.PrimaryColor));
+            battleLog.Append(new Info($"\n>> Heroes' Inventory <<", heroesPlayer.PrimaryColor));
             AppenedPartyInventoryToLog(Heroes, whitespace: 0);
 
             battleLog.Append(new Info($"\n\n{middleLines}\n\n", ConsoleColor.Gray));
-            battleLog.Append(new Info($"*** The Monsters ***\n", monstersPlayer.PrimaryColor));
+            battleLog.AppendWithinWhitespace(new Info($"*** The Monsters ***\n", monstersPlayer.PrimaryColor), whitespace: 80);
             AppendPartyUnitsInfoToLog(Monsters, whitespace: 80);
-            battleLog.Append(new Info($"\n>> Monsters' Inventory: ", monstersPlayer.PrimaryColor));
-            AppenedPartyInventoryToLog(Monsters, whitespace: 0);
-
+            battleLog.Append(new Info($"\n"));
+            battleLog.Append(new Info($">> Monsters' Inventory <<", monstersPlayer.PrimaryColor));
+            AppenedPartyInventoryToLog(Monsters, whitespace: 80);
             battleLog.Append(new Info($"\n\n{bottomLines}\n\n", ConsoleColor.Gray));
             battleLog.PrintToConsole();
 

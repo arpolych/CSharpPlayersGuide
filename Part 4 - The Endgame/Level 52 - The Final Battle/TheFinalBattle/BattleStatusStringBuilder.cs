@@ -11,11 +11,20 @@
                 Log.Add(newInfo);
             }
 
+            public void AppendWithinWhitespace(Info newInfo, int whitespace)
+            {
+                int textLength = newInfo.Text.Length;
+
+                whitespace -= textLength;
+                newInfo.ChangeWhitespace(whitespace);
+                Log.Add(newInfo);
+            }
+
             public void PrintToConsole()
             {
                 foreach (var info in Log)
                 {
-                    ColoredConsole.Write($"{info.Text}", info.TextColor);
+                    ColoredConsole.Write($"{info}", info.TextColor);
                 }
             }
         }
@@ -24,7 +33,8 @@
         {
             public string Text { get; private set; }
             public ConsoleColor TextColor { get; } = ConsoleColor.White;
-            public int Whitespace { get; } = 0;
+            public int Whitespace { get; private set; } = 0;
+            private string _whitespaceStr = string.Empty;
 
             public Info(string text,
                         ConsoleColor textColor = ConsoleColor.White,
@@ -32,19 +42,29 @@
             {
                 Text = text;
                 TextColor = textColor;
-                AddWhitespaceToText(whitespace);
+                Whitespace = whitespace;
+                ConstructWhitespaceStr();
             }
 
-            private void AddWhitespaceToText(int whitespace)
+            private void ConstructWhitespaceStr()
             {
-                string whitespaceStr = string.Empty;
+                _whitespaceStr = string.Empty;
 
-                for (int i = 0; i < whitespace; i++)
+                for (int i = 0; i < Whitespace; i++)
                 {
-                    whitespaceStr += " ";
+                    _whitespaceStr += " ";
                 }
+            }
 
-                Text = $"{whitespaceStr}{Text}";
+            public void ChangeWhitespace(int newWhitespace)
+            {
+                Whitespace = newWhitespace;
+                ConstructWhitespaceStr();
+            }
+
+            public override string ToString()
+            {
+                return $"{_whitespaceStr}{Text}";
             }
         }
     }
