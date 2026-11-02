@@ -4,6 +4,25 @@
     {
         string Name { get; }
         void Apply(Character playerUnit, Battle gameState);
+
+        public static string GetGearNamesUnique<T>(List<T> gearInventory)
+            where T : IUnitItem
+        {
+            if (gearInventory.Count == 0) return string.Empty;
+            else
+            {
+                var itemTypeGroup = UseInventoryItemAction<T>.GetDistictItemGroups(gearInventory);
+                string gearItemsToString = "";
+
+                foreach (var gearItem in itemTypeGroup)
+                {
+                    gearItemsToString += $"{gearItem.Name} ({gearItem.Quantity}), ";
+                }
+                gearItemsToString = gearItemsToString[..^2];
+
+                return $"{gearItemsToString}.";
+            }
+        }
     }
 
     #region - Consumable items for player units/characters.

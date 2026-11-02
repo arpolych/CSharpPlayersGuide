@@ -124,12 +124,7 @@
         public T? RetrievePlayerItemChoice(Character playerUnit, Battle gameState, IPlayer player)
         {
             // Step 1: Group the items found in this inventory...
-            var itemGroups = from items in InventoryItems
-                             let categoryKey = (ItemType: items.GetType(), ItemName: items.Name)
-                             group items by categoryKey into itemCategories
-                             select new ItemGroupTypeInfo(Type: itemCategories.Key.ItemType,
-                                                       Name: itemCategories.Key.ItemName,
-                                                       Quantity: itemCategories.Count());
+            IEnumerable<ItemGroupTypeInfo> itemGroups = GetDistictItemGroups(InventoryItems);
 
             // Step 2: Request the player's choice of item group...
             var itemTypeGroupByPlayer = player.ChooseItemTypeGroup(itemGroups);
@@ -138,6 +133,16 @@
             {
                 return item.GetType().Equals(itemTypeGroupByPlayer.Type);
             });
+        }
+
+        public static IEnumerable<ItemGroupTypeInfo> GetDistictItemGroups(List<T> InventoryItems)
+        {
+            return from items in InventoryItems
+                   let categoryKey = (ItemType: items.GetType(), ItemName: items.Name)
+                   group items by categoryKey into itemCategories
+                   select new ItemGroupTypeInfo(Type: itemCategories.Key.ItemType,
+                                                Name: itemCategories.Key.ItemName,
+                                                Quantity: itemCategories.Count());
         }
     }
 
