@@ -16,7 +16,18 @@
 
                 foreach (var gearItem in itemTypeGroup)
                 {
-                    gearItemsToString += $"{gearItem.Name} ({gearItem.Quantity}), ";
+                    if (gearItem.Quantity > 1)
+                    {
+                        gearItemsToString += $"{gearItem.Name} ({gearItem.Quantity}), ";
+                    }
+                    else if (gearItem.Quantity == 1)
+                    {
+                        gearItemsToString += $"{gearItem.Name}, ";
+                    }
+                    else
+                    {
+                        throw new Exception("What's the quantity of this gear type!?");
+                    }
                 }
                 gearItemsToString = gearItemsToString[..^2];
 
