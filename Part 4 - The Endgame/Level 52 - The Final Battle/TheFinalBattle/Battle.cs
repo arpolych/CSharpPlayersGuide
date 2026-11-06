@@ -245,8 +245,11 @@ namespace TheFinalBattle
                 string unequippedGear = IUnitItem.GetGearNamesUnique<EquippableGearItem>(p.UnequippedGear);
                 string consumables = IUnitItem.GetGearNamesUnique<ConsumableItem>(p.ConsumablesInventory);
 
-                battleLog.Append(new Info($"\n   - Unequipped Gear: {unequippedGear}"));
-                battleLog.Append(new Info($"\n   - Consumables: {consumables}"));
+                if (!unequippedGear.Equals(string.Empty))
+                    battleLog.Append(new Info($"\n   - Unequipped Gear: {unequippedGear}"));
+
+                if (!consumables.Equals(string.Empty))
+                    battleLog.Append(new Info($"\n   - Consumables: {consumables}"));
             }
         }
     }
