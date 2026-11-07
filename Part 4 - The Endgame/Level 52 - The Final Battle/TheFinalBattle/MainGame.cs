@@ -12,6 +12,8 @@ Party heroes, monsterWave1,
 InitializeHeroes(heroesPlayer, out heroes);
 InitializeMonsters(monstersPlayer, out monsterWave1, out monsterWave2, out monsterWave3);
 
+AskColorChoice();
+
 // Establish battle of the game!
 var battle = new Battle(heroes, monsterWave1, monsterWave2, monsterWave3);
 battle.Run();
@@ -71,6 +73,12 @@ static string AskTrueProgrammerName()
     ColoredConsole.Write("What is the name of the \"True Programmer\"? ", ConsoleColor.DarkYellow);
 
     return ColoredConsole.ReadLine(ConsoleColor.Yellow) ?? "True Programmer";
+}
+
+static void AskColorChoice(string message = "\nChoose color: ")
+{
+    Console.WriteLine(message);
+    PlayerConsoleColors.DisplayColorPairs();
 }
 
 static void InitializeHeroes(IPlayer heroesPlayer, out Party heroes)
