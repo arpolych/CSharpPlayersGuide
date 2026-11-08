@@ -78,7 +78,7 @@ static string AskTrueProgrammerName()
 static void AskColorChoice(string message = "\nChoose color: ")
 {
     Console.WriteLine(message);
-    PlayerConsoleColors.DisplayColorPairs();
+    BattleConsoleColors.PrintColorList();
 }
 
 static void InitializeHeroes(IPlayer heroesPlayer, out Party heroes)

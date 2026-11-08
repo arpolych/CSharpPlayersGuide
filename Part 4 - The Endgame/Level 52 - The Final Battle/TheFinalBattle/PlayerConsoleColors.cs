@@ -1,21 +1,56 @@
 ﻿namespace TheFinalBattle
 {
-    public static class PlayerConsoleColors
+    public static class BattleConsoleColors
     {
-        public readonly static ConsoleColor[,] GameColors = {
-            // Light Colors - first array
-            { ConsoleColor.Blue, ConsoleColor.Red, ConsoleColor.Yellow, ConsoleColor.Green, ConsoleColor.Cyan, ConsoleColor.Magenta, ConsoleColor.Gray },
-            // Equivalent Dark Colors - second array
-            { ConsoleColor.DarkBlue, ConsoleColor.DarkRed, ConsoleColor.DarkYellow, ConsoleColor.DarkGreen, ConsoleColor.DarkCyan, ConsoleColor.DarkMagenta, ConsoleColor.DarkGray } };
-        public readonly static int totalColors = GameColors.GetLength(1);
-
-        public static void DisplayColorPairs()
+        private static readonly ConsoleColor[] LightColors =
         {
+            ConsoleColor.Blue, ConsoleColor.Red, ConsoleColor.Yellow, ConsoleColor.Green, ConsoleColor.Cyan, ConsoleColor.Magenta, ConsoleColor.Gray
+        };
+        private static readonly ConsoleColor[] DarkColors =
+        {
+            ConsoleColor.DarkBlue, ConsoleColor.DarkRed, ConsoleColor.DarkYellow, ConsoleColor.DarkGreen, ConsoleColor.DarkCyan, ConsoleColor.DarkMagenta, ConsoleColor.DarkGray
+        };
+
+        public static ConsoleColor GetLightConsoleColor(BattleColors colorChoice)
+        {
+            foreach (var lightColor in LightColors)
+            {
+                if (lightColor.ToString().Equals(colorChoice.ToString()))
+                {
+                    return lightColor;
+                }
+            }
+
+            throw new Exception("Unable to retrieve light color!");
+        }
+
+        public static ConsoleColor GetDarkConsoleColor(BattleColors colorChoice)
+        {
+            foreach (var darkColor in DarkColors)
+            {
+                if (darkColor.ToString().Contains(colorChoice.ToString()))
+                {
+                    return darkColor;
+                }
+            }
+
+            throw new Exception("Unable to retrieve dark color!");
+        }
+
+        public static void PrintColorList()
+        {
+            int totalColors = LightColors.Length;
+
             for (int i = 0; i < totalColors; i++)
             {
-                ColoredConsole.Write($"{i + 1}. {GameColors[0, i].ToString()}", GameColors[0, i]);
-                ColoredConsole.WriteLine($" and {GameColors[1, i].ToString()}", GameColors[1, i]);
+                ColoredConsole.Write($"{i + 1}. {LightColors[i]}", LightColors[i]);
+                ColoredConsole.WriteLine($" and {DarkColors[i]}", DarkColors[i]);
             }
         }
+    }
+
+    public enum BattleColors
+    {
+        Blue, Red, Yellow, Green, Cyan, Magenta, Gray
     }
 }
