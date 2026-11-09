@@ -43,9 +43,21 @@
 
             for (int i = 0; i < totalColors; i++)
             {
-                ColoredConsole.Write($"{i + 1}. {LightColors[i]}", LightColors[i]);
+                ColoredConsole.Write($" {i + 1}. {LightColors[i]}", LightColors[i]);
                 ColoredConsole.WriteLine($" and {DarkColors[i]}", DarkColors[i]);
             }
+        }
+    }
+
+    public sealed class BattleColor
+    {
+        public ConsoleColor Primary { get; }
+        public ConsoleColor Secondary { get; }
+
+        public BattleColor(BattleColors aColor)
+        {
+            Primary = BattleConsoleColors.GetLightConsoleColor(aColor);
+            Secondary = BattleConsoleColors.GetDarkConsoleColor(aColor);
         }
     }
 

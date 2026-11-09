@@ -12,11 +12,11 @@ Party heroes, monsterWave1,
 InitializeHeroes(heroesPlayer, out heroes);
 InitializeMonsters(monstersPlayer, out monsterWave1, out monsterWave2, out monsterWave3);
 
-AskColorChoice();
+AskColorChoice(" >> Enter your color choice: ");
 
 // Establish battle of the game!
 var battle = new Battle(heroes, monsterWave1, monsterWave2, monsterWave3);
-battle.Run();
+//battle.Run();
 
 static void InitializePlayers(out IPlayer heroesPlayer, out IPlayer monstersPlayer)
 {
@@ -77,8 +77,9 @@ static string AskTrueProgrammerName()
 
 static void AskColorChoice(string message = "\nChoose color: ")
 {
-    Console.WriteLine(message);
+    Console.WriteLine("\nAvailable color options:");
     BattleConsoleColors.PrintColorList();
+    Console.Write(message);
 }
 
 static void InitializeHeroes(IPlayer heroesPlayer, out Party heroes)
