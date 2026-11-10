@@ -2,42 +2,25 @@
 {
     public interface IPlayer
     {
-        ConsoleColor PrimaryColor { get; }
-        ConsoleColor SecondaryColor { get; }
+        BattleColor GameColor { get; set; }
+        ConsoleColor PrimaryColor { get => GameColor.Primary; }
+        ConsoleColor SecondaryColor { get => GameColor.Secondary; }
         IAction ChooseAction(Character playerUnit, Battle gameState);
         ItemGroupTypeInfo ChooseItemTypeGroup(IEnumerable<ItemGroupTypeInfo> itemTypeGroups);
     }
 
     public abstract class Player : IPlayer
     {
-        public ConsoleColor PrimaryColor { get; protected set; }
-        public ConsoleColor SecondaryColor { get; protected set; }
+        public BattleColor GameColor { get; set; }
 
-        protected readonly static ConsoleColor[,] GameColors = {
-            // Light Colors - first array
-            { ConsoleColor.Blue, ConsoleColor.Red, ConsoleColor.Yellow, ConsoleColor.Green, ConsoleColor.Cyan, ConsoleColor.Magenta, ConsoleColor.Gray },
-            // Equivalent Dark Colors - second array
-            { ConsoleColor.DarkBlue, ConsoleColor.DarkRed, ConsoleColor.DarkYellow, ConsoleColor.DarkGreen, ConsoleColor.DarkCyan, ConsoleColor.DarkMagenta, ConsoleColor.DarkGray } };
-
-        public Player() => AssignRandomColor();
+        public Player() => GameColor = BattleConsoleColors.GetRandomBattleColor();
 
         public Player(ConsoleColor primaryColor, ConsoleColor secondaryColor)
-        {
-            PrimaryColor = primaryColor;
-            SecondaryColor = secondaryColor;
-        }
+            => GameColor = new(primaryColor, secondaryColor);
 
         public abstract IAction ChooseAction(Character playerUnit, Battle gameState);
 
         public abstract ItemGroupTypeInfo ChooseItemTypeGroup(IEnumerable<ItemGroupTypeInfo> itemTypeGroups);
-
-        protected void AssignRandomColor()
-        {
-            int index = Battle.Randomness.Next(GameColors.GetLength(1));
-
-            PrimaryColor = GameColors[0, index];
-            SecondaryColor = GameColors[1, index];
-        }
     }
 
     public class ComputerPlayer : Player
@@ -218,9 +201,9 @@
 
         public string GetConsoleInput(string userMessage)
         {
-            ColoredConsole.Write(userMessage, PrimaryColor);
+            ColoredConsole.Write(userMessage, ((IPlayer)this).PrimaryColor);
 
-            return ColoredConsole.ReadLine(SecondaryColor);
+            return ColoredConsole.ReadLine(((IPlayer)this).SecondaryColor);
         }
     }
 

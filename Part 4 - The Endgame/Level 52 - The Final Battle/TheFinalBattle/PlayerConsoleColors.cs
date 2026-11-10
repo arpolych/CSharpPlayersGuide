@@ -10,6 +10,12 @@
         {
             ConsoleColor.DarkBlue, ConsoleColor.DarkRed, ConsoleColor.DarkYellow, ConsoleColor.DarkGreen, ConsoleColor.DarkCyan, ConsoleColor.DarkMagenta, ConsoleColor.DarkGray
         };
+        public static int TotalColors { get; }
+
+        static BattleConsoleColors()
+        {
+            TotalColors = LightColors.Length;
+        }
 
         public static ConsoleColor GetLightConsoleColor(BattleColors colorChoice)
         {
@@ -37,6 +43,20 @@
             throw new Exception("Unable to retrieve dark color!");
         }
 
+        public static BattleColor GetBattleColor(int colorListIndex)
+        {
+            // Reminder: Color index presented to user started from 1.
+            --colorListIndex;
+
+            var lightColor = LightColors[colorListIndex];
+            var darkColor = DarkColors[colorListIndex];
+
+            return new BattleColor(lightColor, darkColor);
+        }
+
+        public static BattleColor GetRandomBattleColor()
+            => GetBattleColor(Battle.Randomness.Next(TotalColors + 1));
+
         public static void PrintColorList()
         {
             int totalColors = LightColors.Length;
@@ -58,6 +78,12 @@
         {
             Primary = BattleConsoleColors.GetLightConsoleColor(aColor);
             Secondary = BattleConsoleColors.GetDarkConsoleColor(aColor);
+        }
+
+        public BattleColor(ConsoleColor primary, ConsoleColor secondary)
+        {
+            Primary = primary;
+            Secondary = secondary;
         }
     }
 
