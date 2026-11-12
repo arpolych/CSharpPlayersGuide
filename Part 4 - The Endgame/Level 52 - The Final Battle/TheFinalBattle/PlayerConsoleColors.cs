@@ -13,9 +13,7 @@
         public static int TotalColors { get; }
 
         static BattleConsoleColors()
-        {
             TotalColors = LightColors.Length;
-        }
 
         public static ConsoleColor GetLightConsoleColor(BattleColors colorChoice)
         {
