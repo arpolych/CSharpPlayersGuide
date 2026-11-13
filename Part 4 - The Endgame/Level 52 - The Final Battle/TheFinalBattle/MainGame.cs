@@ -16,6 +16,9 @@ InitializeMonsters(monstersPlayer, out monsterWave1, out monsterWave2, out monst
 var battle = new Battle(heroes, monsterWave1, monsterWave2, monsterWave3);
 battle.Run();
 
+/*
+ * Initialize players...
+ */
 static void InitializePlayers(out IPlayer heroesPlayer, out IPlayer monstersPlayer)
 {
     switch (AskGameplayMode())
