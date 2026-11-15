@@ -48,7 +48,7 @@
 
             if (playerUnit!.Offense != null) AttackData = playerUnit.Offense.ApplyOn(AttackData);
 
-            int targetDamageReceived = target.WasAttacked(AttackData);
+            int targetDamageReceived = target.ApplyEnemyAttack(AttackData);
             Console.WriteLine($"   >> {AttackType.Name} dealt {targetDamageReceived} to {target.Name}.");
             Console.WriteLine($"   >> {target.Name} is now at {target.GetHPStatus()} HP.");
 

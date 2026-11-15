@@ -72,7 +72,7 @@
         {
             var message = $" >> {playerUnit.Name} has used a healing potion! (+{HealingValue} HP)";
 
-            playerUnit.WasHealed(HealingValue);
+            playerUnit.ApplyHeal(HealingValue);
             gameState.GetPartyFor(playerUnit)!.ConsumablesInventory.Remove(this);
             ColoredConsole.WriteLine(message, ConsoleColor.Magenta);
         }
@@ -86,7 +86,7 @@
         {
             var message = $" >> {playerUnit.Name} has consumed simulas' soup and is now back to full HP!";
 
-            playerUnit.WasHealed(playerUnit.MaxHP);
+            playerUnit.ApplyHeal(playerUnit.MaxHP);
             gameState.GetPartyFor(playerUnit)!.ConsumablesInventory.Remove(this);
             ColoredConsole.WriteLine(message, ConsoleColor.Magenta);
         }
