@@ -1,28 +1,5 @@
 ﻿namespace TheFinalBattle
 {
-    public interface IPlayer
-    {
-        BattleColor GameColor { get; set; }
-        ConsoleColor PrimaryColor { get => GameColor.Primary; }
-        ConsoleColor SecondaryColor { get => GameColor.Secondary; }
-        IAction ChooseAction(Character playerUnit, Battle gameState);
-        ItemGroupTypeInfo ChooseItemTypeGroup(IEnumerable<ItemGroupTypeInfo> itemTypeGroups);
-    }
-
-    public abstract class Player : IPlayer
-    {
-        public BattleColor GameColor { get; set; }
-
-        public Player() => GameColor = BattleConsoleColors.GetRandomBattleColor();
-
-        public Player(ConsoleColor primaryColor, ConsoleColor secondaryColor)
-            => GameColor = new(primaryColor, secondaryColor);
-
-        public abstract IAction ChooseAction(Character playerUnit, Battle gameState);
-
-        public abstract ItemGroupTypeInfo ChooseItemTypeGroup(IEnumerable<ItemGroupTypeInfo> itemTypeGroups);
-    }
-
     public class ComputerPlayer : Player
     {
         public ComputerPlayer()
@@ -153,84 +130,6 @@
             var itemGroupTypeChoice = array[Battle.Randomness.Next(array.Length)];
 
             return itemGroupTypeChoice;
-        }
-    }
-
-    public class HumanPlayer : Player
-    {
-        public HumanPlayer()
-            : base() { }
-
-        public HumanPlayer(ConsoleColor primaryColor, ConsoleColor secondaryColor)
-            : base(primaryColor, secondaryColor) { }
-
-        public override IAction ChooseAction(Character playerUnit, Battle gameState)
-        {
-            var availableActions = gameState.GetAvailablePlayerConsoleActions(playerUnit);
-            var consoleMenu = new ConsoleMenu<ActionConsoleMenuItem>(availableActions);
-
-            return ChooseFromConsoleMenu(consoleMenu).PlayerAction;
-        }
-
-        private T ChooseFromConsoleMenu<T>(ConsoleMenu<T> displayedMenu, string userMessage = "What are you going to choose? ")
-        {
-            Console.WriteLine(displayedMenu);
-
-            do
-            {
-                try
-                {
-                    string playerInput = GetConsoleInput(userMessage);
-
-                    return displayedMenu.RetrieveElement(Convert.ToInt32(playerInput));
-                }
-                catch (Exception)
-                {
-                    continue;
-                }
-            }
-            while (true);
-        }
-
-        public override ItemGroupTypeInfo ChooseItemTypeGroup(IEnumerable<ItemGroupTypeInfo> itemTypeGroups)
-        {
-            var consoleMenu = new ConsoleMenu<ItemGroupTypeInfo>(itemTypeGroups);
-
-            return ChooseFromConsoleMenu(consoleMenu, "What item to use? ");
-        }
-
-        public string GetConsoleInput(string userMessage)
-        {
-            ColoredConsole.Write(userMessage, ((IPlayer)this).PrimaryColor);
-
-            return ColoredConsole.ReadLine(((IPlayer)this).SecondaryColor);
-        }
-    }
-
-    public class ConsoleMenu<T>
-    {
-        private readonly string? _menuHeading;
-        private readonly IEnumerable<T> _collection;
-
-        public ConsoleMenu(IEnumerable<T> collection, string? menuHeading = null)
-        {
-            _menuHeading = menuHeading;
-            _collection = collection;
-        }
-
-        public T RetrieveElement(int elementNum) => _collection.ElementAt(elementNum - 1);
-
-        public override string ToString()
-        {
-            string consoleText = (_menuHeading != null) ? $"{_menuHeading}\n" : string.Empty;
-            int elementNum = 1;
-
-            foreach (var element in _collection)
-            {
-                consoleText += $"{elementNum++}. {element}\n";
-            }
-
-            return consoleText;
         }
     }
 }
