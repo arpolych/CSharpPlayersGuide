@@ -18,6 +18,10 @@
         /// <returns>The element of T type in the console menu.</returns>
         public T RetrieveElement(int elementNum) => _collection.ElementAt(elementNum - 1);
 
+        /// <summary>
+        /// A numbered console menu that starts from 1.
+        /// </summary>
+        /// <returns>The numbered console menu.</returns>
         public override string ToString()
         {
             string consoleText = (_menuHeading != null) ? $"{_menuHeading}\n" : string.Empty;
