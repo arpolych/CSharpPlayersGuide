@@ -5,6 +5,11 @@
         private readonly string? _menuHeading;
         private readonly IEnumerable<T> _collection;
 
+        /// <summary>
+        /// Constructs a console menu.
+        /// </summary>
+        /// <param name="collection"></param>
+        /// <param name="menuHeading"></param>
         public ConsoleMenu(IEnumerable<T> collection, string? menuHeading = null)
         {
             _menuHeading = menuHeading;
