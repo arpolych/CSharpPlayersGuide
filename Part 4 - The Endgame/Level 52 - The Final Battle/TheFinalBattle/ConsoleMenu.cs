@@ -2,6 +2,9 @@
 {
     public class ConsoleMenu<T>
     {
+        /// <summary>
+        /// The heading of the console menu, which is optional.
+        /// </summary>
         private readonly string? _menuHeading;
         private readonly IEnumerable<T> _collection;
 
