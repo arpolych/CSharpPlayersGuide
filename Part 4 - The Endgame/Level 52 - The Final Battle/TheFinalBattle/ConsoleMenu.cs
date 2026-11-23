@@ -1,5 +1,9 @@
 ﻿namespace TheFinalBattle
 {
+    /// <summary>
+    /// Creates a console menu of a specified type.
+    /// </summary>
+    /// <typeparam name="T">A type for the console menu.</typeparam>
     public class ConsoleMenu<T>
     {
         /// <summary>
