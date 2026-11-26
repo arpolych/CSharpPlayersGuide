@@ -10,6 +10,9 @@
         /// Primary color.
         /// </summary>
         ConsoleColor PrimaryColor { get => GameColor.Primary; }
+        /// <summary>
+        /// Secondary color.
+        /// </summary>
         ConsoleColor SecondaryColor { get => GameColor.Secondary; }
         IAction ChooseAction(Character playerUnit, Battle gameState);
         ItemGroupTypeInfo ChooseItemTypeGroup(IEnumerable<ItemGroupTypeInfo> itemTypeGroups);
