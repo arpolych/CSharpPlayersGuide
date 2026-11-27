@@ -14,6 +14,12 @@
         /// Secondary color.
         /// </summary>
         ConsoleColor SecondaryColor { get => GameColor.Secondary; }
+        /// <summary>
+        /// Picks an action.
+        /// </summary>
+        /// <param name="playerUnit">The acting unit.</param>
+        /// <param name="gameState">The current game state.</param>
+        /// <returns></returns>
         IAction ChooseAction(Character playerUnit, Battle gameState);
         ItemGroupTypeInfo ChooseItemTypeGroup(IEnumerable<ItemGroupTypeInfo> itemTypeGroups);
     }
